@@ -2,7 +2,7 @@ import Link from "next/link";
 
 import ApiStatus from "@/components/api-status";
 import { LogoTile, Wordmark } from "@/components/logo";
-import { GITHUB_URL } from "@/lib/config";
+import { API_URL, GITHUB_URL } from "@/lib/config";
 
 const COLUMNS: { title: string; links: { label: string; href: string }[] }[] = [
   {
@@ -18,7 +18,7 @@ const COLUMNS: { title: string; links: { label: string; href: string }[] }[] = [
     title: "Resources",
     links: [
       { label: "GitHub", href: GITHUB_URL },
-      { label: "API health", href: "https://portad-production.up.railway.app/healthz" },
+      { label: "API health", href: `${API_URL}/healthz` },
       { label: "Account", href: "/account" },
     ],
   },

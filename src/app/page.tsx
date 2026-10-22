@@ -98,26 +98,59 @@ const FAQ = [
   },
 ];
 
+
 function Cell({ value }: { value: boolean | "partial" }) {
   if (value === true) {
     return (
-      <span className="grid h-6 w-6 place-items-center rounded-full bg-emerald-400/15 text-emerald-300">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.4} className="h-3.5 w-3.5">
-          <path d="M5 12.5l4.5 4.5L19 7.5" strokeLinecap="round" strokeLinejoin="round" />
+      <span
+        role="img"
+        aria-label="Yes"
+        className="grid h-6 w-6 place-items-center rounded-full bg-emerald-400/15 text-emerald-300"
+      >
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth={2.4}
+          aria-hidden="true"
+          className="h-3.5 w-3.5"
+        >
+          <path
+            d="M5 12.5l4.5 4.5L19 7.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
         </svg>
       </span>
     );
   }
+
   if (value === "partial") {
     return (
-      <span className="grid h-6 w-6 place-items-center rounded-full bg-amber-400/15 text-amber-300 text-xs font-bold">
+      <span
+        role="img"
+        aria-label="Partial support"
+        className="grid h-6 w-6 place-items-center rounded-full bg-amber-400/15 text-amber-300 text-xs font-bold"
+      >
         ~
       </span>
     );
   }
+
   return (
-    <span className="grid h-6 w-6 place-items-center rounded-full bg-white/6 text-frost-600">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.4} className="h-3 w-3">
+    <span
+      role="img"
+      aria-label="No"
+      className="grid h-6 w-6 place-items-center rounded-full bg-white/6 text-frost-600"
+    >
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth={2.4}
+        aria-hidden="true"
+        className="h-3 w-3"
+      >
         <path d="M6 12h12" strokeLinecap="round" />
       </svg>
     </span>

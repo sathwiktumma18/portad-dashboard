@@ -25,9 +25,6 @@ export const metadata: Metadata = {
   description:
     "Local-first, verifiable SaaS workspace migrations: export, validate, transform and import with checksums, resumable checkpoints and a round-trip diff.",
   applicationName: "PortaD",
-  alternates: {
-    canonical: "/",
-  },
   openGraph: {
     type: "website",
     siteName: "PortaD",

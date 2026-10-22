@@ -151,8 +151,13 @@ function getSnapshot(): AuthState {
   return state;
 }
 
+const SERVER_SNAPSHOT: AuthState = {
+  ready: false,
+  session: null,
+};
+
 function getServerSnapshot(): AuthState {
-  return { ready: false, session: null };
+  return SERVER_SNAPSHOT;
 }
 
 export function useAuth(): AuthState {
