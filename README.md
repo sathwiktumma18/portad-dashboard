@@ -164,6 +164,7 @@ npm run build
 
 The project uses GitHub Issues and pull requests as the source of truth for day-to-day work. Start here:
 
+- [Migration and adapter guide](docs/MIGRATION_AND_ADAPTERS.md) — step-by-step migration process, source/target adapter architecture, and compatibility matrix guide.
 - [Product requirements](docs/PRODUCT_REQUIREMENTS.md) — intended users, requirements, constraints, and open product/API questions.
 - [Project operating system](docs/PROJECT_OPERATING_SYSTEM.md) — planning cadence, work lifecycle, review policy, and team metrics.
 - [Engineering workflow](docs/ENGINEERING_WORKFLOW.md) — local checks, PR checklist, testing strategy, and release readiness.
