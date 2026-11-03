@@ -83,10 +83,15 @@ export default function HeroVisual() {
                 {!reduce && (
                   <motion.span
                     aria-hidden
-                    className="absolute -left-[3px] h-1.5 w-1.5 rounded-full bg-ice-400 shadow-[0_0_10px_2px_rgba(0,198,255,0.7)]"
-                    initial={{ top: "-6px", opacity: 0 }}
-                    animate={{ top: ["-6px", "22px"], opacity: [0, 1, 1, 0] }}
-                    transition={{ duration: 1.9, repeat: Infinity, ease: "linear", delay: i * 0.45 }}
+                    className="absolute left-1/2 top-0 h-1.5 w-1.5 -translate-x-1/2 rounded-full bg-ice-400 shadow-[0_0_10px_2px_rgba(0,198,255,0.7)]"
+                    initial={{ y: -3, opacity: 0 }}
+                    animate={{ y: [-3, 21], opacity: [0, 1, 1, 0] }}
+                    transition={{
+                      duration: 1.9,
+                      repeat: Infinity,
+                      ease: "linear",
+                      delay: i * 0.45,
+                    }}
                   />
                 )}
               </div>
