@@ -1,0 +1,92 @@
+## Environment Configuration and Secrets Management
+
+### 1. Overview
+
+The PortaD dashboard uses environment variables to configure Firebase Authentication and communicate with the PortaD API.
+
+Environment files must be managed carefully to prevent accidental exposure of sensitive credentials in the Git repository.
+
+### 2. Git Environment File Policy
+
+The following rules must be followed:
+
+| File | Git policy | Purpose |
+|---|---|---|
+| `.env.example` | Committed | Provides configuration variable names and placeholders |
+| `.env` | Ignored | Stores local environment configuration |
+| `.env.local` | Ignored | Stores developer-specific local configuration |
+| `.env.production` | Ignored | Stores production environment configuration |
+
+The repository's `.gitignore` includes:
+
+```gitignore
+# Environment files
+.env*
+!.env.example
+```
+
+This ensures that environment files are excluded from Git tracking while allowing `.env.example` to remain available as a configuration reference.
+
+### 3. Secrets Management Guidelines
+
+The following information must never be committed to the repository or included in `.env.example`:
+
+- Private API keys and access tokens.
+- Database usernames and passwords.
+- JWT signing secrets and private keys.
+- Firebase service-account credentials.
+- Other confidential application credentials.
+
+The `.env.example` file must contain only variable names, safe defaults, and placeholder values.
+
+### 4. Firebase Configuration Security
+
+The dashboard uses `NEXT_PUBLIC_` environment variables for Firebase Web SDK configuration.
+
+Example:
+
+```env
+NEXT_PUBLIC_FIREBASE_API_KEY=
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=
+NEXT_PUBLIC_FIREBASE_APP_ID=
+```
+
+**Security considerations:**
+
+- Next.js exposes `NEXT_PUBLIC_` variables to client-side browser code.
+- Firebase Web configuration is generally public by design.
+- Firebase API keys should not be treated as authorization secrets.
+- Firebase Authentication and Security Rules must enforce access controls.
+- Service-account credentials and other private Firebase credentials must never be exposed to the browser.
+
+### 5. Verification and Validation
+
+The following Git commands can be used to verify environment-file protection:
+
+```powershell
+# Check tracked environment files
+git ls-files | Select-String '(^|/)\.env($|\.)'
+
+# Verify ignored environment files
+git check-ignore -v .env .env.local .env.production
+
+# Review environment-file history
+git log --all --full-history --name-status -- ":(glob)**/.env*"
+```
+
+The repository audit identified `.env.example` as the environment file present in the inspected Git history. No actual `.env`, `.env.local`, or `.env.production` files were identified in the fetched branch history reviewed during this check.
+
+### 6. Maintenance Responsibilities
+
+All contributors must:
+
+1. Keep `.env.example` updated when new configuration variables are introduced.
+2. Ensure local and production environment files remain excluded from Git.
+3. Review changes to `.gitignore` before committing.
+4. Never commit private credentials or sensitive configuration values.
+5. Rotate exposed credentials immediately if accidental disclosure is identified.
+
+### 7. Conclusion
+
+The PortaD dashboard follows an environment-file management policy that separates public configuration references from private environment settings. Contributors are responsible for maintaining this separation throughout development, testing, and deployment.
