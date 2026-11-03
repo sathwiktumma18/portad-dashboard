@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useMemo, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
@@ -13,13 +13,43 @@ type Entry = {
 };
 
 const ENTRIES: Entry[] = [
-  { name: "Notion", status: "Supported", detail: "Pages, databases, records, attachments, relations", kind: "source" },
-  { name: "Fixtures demo", status: "Supported", detail: "Synthetic workspace for tests and demos", kind: "source" },
-  { name: "Trello", status: "Planned", detail: "Milestone 0.3", kind: "source" },
-  { name: "ClickUp", status: "Planned", detail: "Milestone 0.4", kind: "source" },
+  {
+    name: "Notion",
+    status: "Supported",
+    detail: "Pages, databases, records, attachments, relations",
+    kind: "source",
+  },
+  {
+    name: "Fixtures demo",
+    status: "Supported",
+    detail: "Synthetic workspace for tests and demos",
+    kind: "source",
+  },
+  {
+    name: "Trello",
+    status: "Planned",
+    detail: "Milestone 0.3",
+    kind: "source",
+  },
+  {
+    name: "ClickUp",
+    status: "Planned",
+    detail: "Milestone 0.4",
+    kind: "source",
+  },
   { name: "Asana", status: "Planned", detail: "Milestone 0.4", kind: "source" },
-  { name: "Huly", status: "Supported", detail: "Unified Import Format workspace", kind: "target" },
-  { name: "Notion", status: "Planned", detail: "Round-trip import", kind: "target" },
+  {
+    name: "Huly",
+    status: "Supported",
+    detail: "Unified Import Format workspace",
+    kind: "target",
+  },
+  {
+    name: "Notion",
+    status: "Planned",
+    detail: "Round-trip import",
+    kind: "target",
+  },
 ];
 
 const FILTERS = ["All", "Supported", "Planned"] as const;
@@ -80,7 +110,11 @@ export default function CompatibilityMatrix() {
             className="w-full rounded-full border border-slate-300 bg-white py-2.5 pl-10 pr-4 text-sm text-slate-900 placeholder:text-slate-400 shadow-xs outline-none transition focus:border-brand-500 focus:ring-1 focus:ring-brand-500 dark:border-white/12 dark:bg-white/[0.04] dark:text-frost-100 dark:placeholder:text-frost-600 dark:shadow-none dark:focus:border-brand-400/60 dark:focus:ring-0"
           />
         </div>
-        <div className="flex flex-wrap gap-2" role="group" aria-label="Filter by status">
+        <div
+          className="flex flex-wrap gap-2"
+          role="group"
+          aria-label="Filter by status"
+        >
           {FILTERS.map((option) => (
             <button
               key={option}
@@ -99,44 +133,56 @@ export default function CompatibilityMatrix() {
           ))}
         </div>
       </div>
-
-      <div className="mt-10 grid gap-6 md:grid-cols-2">
-        {(["source", "target"] as const).map((kind) => (
-          <section key={kind}>
-            <h2 className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-slate-500 dark:text-frost-600">
-              {kind === "source" ? "Sources" : "Targets"}
-            </h2>
-            <ul className="space-y-3">
-              <AnimatePresence initial={false}>
-                {groups[kind].map((item) => (
-                  <motion.li
-                    key={`${kind}-${item.name}-${item.detail}`}
-                    layout
-                    initial={{ opacity: 0, y: 12 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -8 }}
-                    transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-                    className="glass flex items-start justify-between gap-4 rounded-2xl p-4 transition hover:border-brand-400/30"
-                  >
-                    <div className="min-w-0">
-                      <p className="font-medium text-slate-900 dark:text-frost-100">{item.name}</p>
-                      <p className="mt-0.5 text-xs leading-5 text-slate-500 dark:text-frost-500">
-                        {item.detail}
-                      </p>
-                    </div>
-                    <Badge status={item.status} />
-                  </motion.li>
-                ))}
-              </AnimatePresence>
-            </ul>
-            {groups[kind].length === 0 && (
-              <p className="rounded-2xl border border-dashed border-slate-300 p-6 text-center text-sm text-slate-500 dark:border-white/12 dark:text-frost-600">
-                No matches — try another search.
-              </p>
-            )}
-          </section>
-        ))}
-      </div>
+      {visible.length === 0 ? (
+        <p
+          role="status"
+          className="mt-10 rounded-2xl border border-dashed border-slate-300 p-6 text-center text-sm text-slate-500 dark:border-white/12 dark:text-frost-600"
+        >
+          No platforms found. Try a different search or select another status
+          filter.
+        </p>
+      ) : (
+        <div className="mt-10 grid gap-6 md:grid-cols-2">
+          {(["source", "target"] as const).map(
+            (kind) =>
+              groups[kind].length > 0 && (
+                <section key={kind}>
+                  <h2 className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-slate-500 dark:text-frost-600">
+                    {kind === "source" ? "Sources" : "Targets"}
+                  </h2>
+                  <ul className="space-y-3">
+                    <AnimatePresence initial={false}>
+                      {groups[kind].map((item) => (
+                        <motion.li
+                          key={`${kind}-${item.name}-${item.detail}`}
+                          layout
+                          initial={{ opacity: 0, y: 12 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -8 }}
+                          transition={{
+                            duration: 0.25,
+                            ease: [0.16, 1, 0.3, 1],
+                          }}
+                          className="glass flex items-start justify-between gap-4 rounded-2xl p-4 transition hover:border-brand-400/30"
+                        >
+                          <div className="min-w-0">
+                            <p className="font-medium text-slate-900 dark:text-frost-100">
+                              {item.name}
+                            </p>
+                            <p className="mt-0.5 text-xs leading-5 text-slate-500 dark:text-frost-500">
+                              {item.detail}
+                            </p>
+                          </div>
+                          <Badge status={item.status} />
+                        </motion.li>
+                      ))}
+                    </AnimatePresence>
+                  </ul>
+                </section>
+              ),
+          )}
+        </div>
+      )}
     </div>
   );
 }
