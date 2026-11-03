@@ -54,7 +54,7 @@ npm run build
 ```
 
 
-### Testing
+## Testing
 
 The project uses Vitest for unit tests and Playwright for browser-based end-to-end (E2E) tests.
 
