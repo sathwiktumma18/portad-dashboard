@@ -474,5 +474,62 @@ describe("Migrate wizard", () => {
       expect(screen.getByText("Step 2, current step")).toBeInTheDocument();
       expect(screen.getByText("Step 3, upcoming")).toBeInTheDocument();
     });
+
+    it("displays an accessible error message and blocks advancement when an invalid file is uploaded", () => {
+      advanceToStep(2);
+
+      const fileInput = screen.getByLabelText(/choose a \.portad package/i);
+      const invalidFile = new File(["fake content"], "malicious.exe", { type: "application/x-msdownload" });
+
+      fireEvent.change(fileInput, { target: { files: [invalidFile] } });
+
+      // Error message should be in the document with role="alert"
+      const alert = screen.getByRole("alert");
+      expect(alert).toHaveTextContent(/invalid file type/i);
+
+      // "Continue" button must remain disabled
+      const continueButton = screen.getByRole("button", { name: "Continue" });
+      expect(continueButton).toBeDisabled();
+
+      // Tree preview should NOT be rendered
+      expect(screen.queryByText(/preview · malicious\.exe/i)).not.toBeInTheDocument();
+    });
+
+    it("allows advancement and renders preview when a valid .portad package is uploaded", () => {
+      advanceToStep(2);
+
+      const fileInput = screen.getByLabelText(/choose a \.portad package/i);
+      const validFile = new File(["valid content"], "workspace.portad", { type: "application/zip" });
+
+      fireEvent.change(fileInput, { target: { files: [validFile] } });
+
+      // No error alert should exist
+      expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+
+      // "Continue" button should be enabled
+      const continueButton = screen.getByRole("button", { name: "Continue" });
+      expect(continueButton).not.toBeDisabled();
+
+      // Tree preview is rendered
+      expect(screen.getByText(/preview · workspace\.portad/i)).toBeInTheDocument();
+    });
+
+    it("displays a warning status when a large package (>250MB) is attached", () => {
+      advanceToStep(2);
+
+      const fileInput = screen.getByLabelText(/choose a \.portad package/i);
+      const largeFile = new File(["large"], "giant_workspace.zip", { type: "application/zip" });
+      Object.defineProperty(largeFile, "size", { value: 300 * 1024 * 1024 });
+
+      fireEvent.change(fileInput, { target: { files: [largeFile] } });
+
+      // Warning message should be rendered with role="status"
+      const status = screen.getByRole("status");
+      expect(status).toHaveTextContent(/large package detected/i);
+
+      // Continue button should still be allowed since it's just a warning, not a blocking error
+      const continueButton = screen.getByRole("button", { name: "Continue" });
+      expect(continueButton).not.toBeDisabled();
+    });
   });
 });

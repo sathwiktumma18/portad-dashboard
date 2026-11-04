@@ -37,17 +37,53 @@ const TREE = [
   { depth: 2, name: "12 files", kind: "file" as const, meta: "84.2 MB · sha256 ✓" },
 ];
 
+const MAX_FILE_SIZE_BYTES = 250 * 1024 * 1024; // 250 MB
+const ALLOWED_EXTENSIONS = [".portad", ".zip"];
+
 export default function Migrate() {
   const reduce = useReducedMotion();
   const [step, setStep] = useState<Step>(0);
   const [source, setSource] = useState<string | null>(null);
   const [target, setTarget] = useState<string | null>(null);
   const [fileName, setFileName] = useState<string | null>(null);
+  const [fileError, setFileError] = useState<string | null>(null);
+  const [fileWarning, setFileWarning] = useState<string | null>(null);
 
   const canAdvance =
     (step === 0 && source !== null) ||
     (step === 1 && target !== null) ||
-    (step === 2 && fileName !== null);
+    (step === 2 && fileName !== null && fileError === null);
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) {
+      setFileName(null);
+      setFileError(null);
+      setFileWarning(null);
+      return;
+    }
+
+    const lowerName = file.name.toLowerCase();
+    const hasValidExt = ALLOWED_EXTENSIONS.some((ext) => lowerName.endsWith(ext));
+
+    if (!hasValidExt) {
+      setFileName(file.name);
+      setFileError("Invalid file type. Please upload a valid .portad or .zip package archive.");
+      setFileWarning(null);
+      return;
+    }
+
+    if (file.size > MAX_FILE_SIZE_BYTES) {
+      setFileName(file.name);
+      setFileError(null);
+      setFileWarning("Large package detected (> 250 MB). Ingestion may require running via the local CLI.");
+      return;
+    }
+
+    setFileName(file.name);
+    setFileError(null);
+    setFileWarning(null);
+  };
 
   const progress = (step / (STEP_LABELS.length - 1)) * 100;
 
@@ -222,15 +258,23 @@ export default function Migrate() {
                   Have a <code className="font-mono text-brand-600 dark:text-brand-300">.portad</code>{" "}
                   package already? Attach it here — files never leave this page.
                 </p>
-                <label className="mt-5 flex cursor-pointer flex-col items-center justify-center rounded-2xl border border-dashed border-slate-300 bg-slate-50/50 px-6 py-10 text-center transition hover:border-brand-400 hover:bg-brand-50/40 dark:border-white/20 dark:bg-transparent dark:hover:border-brand-400/60 dark:hover:bg-brand-500/5">
+                <label
+                  htmlFor="package-upload-input"
+                  className={
+                    "mt-5 flex cursor-pointer flex-col items-center justify-center rounded-2xl border border-dashed px-6 py-10 text-center transition " +
+                    (fileError
+                      ? "border-red-400 bg-red-50/50 hover:border-red-500 hover:bg-red-50/70 dark:border-red-500/40 dark:bg-red-950/20 dark:hover:border-red-400/60"
+                      : "border-slate-300 bg-slate-50/50 hover:border-brand-400 hover:bg-brand-50/40 dark:border-white/20 dark:bg-transparent dark:hover:border-brand-400/60 dark:hover:bg-brand-500/5")
+                  }
+                >
                   <input
+                    id="package-upload-input"
                     type="file"
                     accept=".zip,.portad"
                     className="sr-only"
-                    onChange={(event) => {
-                      const file = event.target.files?.[0];
-                      setFileName(file ? file.name : null);
-                    }}
+                    aria-describedby={fileError ? "file-error-msg" : fileWarning ? "file-warning-msg" : undefined}
+                    aria-invalid={fileError !== null}
+                    onChange={handleFileChange}
                   />
                   <span className="text-sm font-medium text-slate-800 dark:text-frost-100">
                     {fileName ?? "Click to choose a .portad package"}
@@ -240,8 +284,28 @@ export default function Migrate() {
                   </span>
                 </label>
 
+                {fileError && (
+                  <p
+                    id="file-error-msg"
+                    role="alert"
+                    className="mt-3 flex items-center gap-1.5 text-xs font-medium text-red-600 dark:text-red-400"
+                  >
+                    <span aria-hidden="true">✕</span> {fileError}
+                  </p>
+                )}
+
+                {fileWarning && !fileError && (
+                  <p
+                    id="file-warning-msg"
+                    role="status"
+                    className="mt-3 flex items-center gap-1.5 text-xs font-medium text-amber-600 dark:text-amber-400"
+                  >
+                    <span aria-hidden="true">⚠</span> {fileWarning}
+                  </p>
+                )}
+
                 <AnimatePresence>
-                  {fileName && (
+                  {fileName && !fileError && (
                     <motion.div
                       initial={reduce ? { opacity: 0 } : { opacity: 0, height: 0 }}
                       animate={reduce ? { opacity: 1 } : { opacity: 1, height: "auto" }}
