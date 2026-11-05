@@ -54,6 +54,14 @@ export default function Migrate() {
     (step === 1 && target !== null) ||
     (step === 2 && fileName !== null && fileError === null);
 
+  const handleSelectSource = (id: string) => {
+    setSource(id);
+  };
+
+  const handleSelectTarget = (id: string) => {
+    setTarget(id);
+  };
+
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) {
@@ -183,13 +191,16 @@ export default function Migrate() {
                 <p className="mt-1 text-sm text-slate-600 dark:text-frost-500">
                   Where the workspace lives today.
                 </p>
-                <div className="mt-5 grid gap-3 sm:grid-cols-2">
+                <div
+                  className="mt-5 grid gap-3 sm:grid-cols-2"
+                  aria-describedby={!source ? "source-requirement-hint" : undefined}
+                >
                   {SOURCES.map((item) => (
                     <button
                       key={item.id}
                       type="button"
                       disabled={!item.ready}
-                      onClick={() => setSource(item.id)}
+                      onClick={() => handleSelectSource(item.id)}
                       className={
                         "rounded-2xl border p-4 text-left transition duration-200 disabled:cursor-not-allowed disabled:opacity-45 " +
                         (source === item.id
@@ -211,6 +222,16 @@ export default function Migrate() {
                     </button>
                   ))}
                 </div>
+
+                {!source ? (
+                  <p
+                    id="source-requirement-hint"
+                    role="status"
+                    className="mt-4 flex items-center gap-1.5 text-xs text-slate-500 dark:text-frost-500"
+                  >
+                    <span aria-hidden="true">ℹ</span> A source platform is required to proceed to the target step.
+                  </p>
+                ) : null}
               </div>
             )}
 
@@ -220,13 +241,16 @@ export default function Migrate() {
                 <p className="mt-1 text-sm text-slate-600 dark:text-frost-500">
                   Where the workspace should land.
                 </p>
-                <div className="mt-5 grid gap-3 sm:grid-cols-2">
+                <div
+                  className="mt-5 grid gap-3 sm:grid-cols-2"
+                  aria-describedby={!target ? "target-requirement-hint" : undefined}
+                >
                   {TARGETS.map((item) => (
                     <button
                       key={item.id}
                       type="button"
                       disabled={!item.ready}
-                      onClick={() => setTarget(item.id)}
+                      onClick={() => handleSelectTarget(item.id)}
                       className={
                         "rounded-2xl border p-4 text-left transition duration-200 disabled:cursor-not-allowed disabled:opacity-45 " +
                         (target === item.id
@@ -248,6 +272,16 @@ export default function Migrate() {
                     </button>
                   ))}
                 </div>
+
+                {!target ? (
+                  <p
+                    id="target-requirement-hint"
+                    role="status"
+                    className="mt-4 flex items-center gap-1.5 text-xs text-slate-500 dark:text-frost-500"
+                  >
+                    <span aria-hidden="true">ℹ</span> A destination platform is required to proceed to package upload.
+                  </p>
+                ) : null}
               </div>
             )}
 
@@ -293,6 +327,16 @@ export default function Migrate() {
                     <span aria-hidden="true">✕</span> {fileError}
                   </p>
                 )}
+
+                {fileName === null && !fileError ? (
+                  <p
+                    id="file-requirement-hint"
+                    role="status"
+                    className="mt-3 flex items-center gap-1.5 text-xs text-slate-500 dark:text-frost-500"
+                  >
+                    <span aria-hidden="true">ℹ</span> A .portad or .zip package archive is required to advance.
+                  </p>
+                ) : null}
 
                 {fileWarning && !fileError && (
                   <p

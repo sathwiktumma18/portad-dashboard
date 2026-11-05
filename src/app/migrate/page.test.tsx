@@ -531,5 +531,77 @@ describe("Migrate wizard", () => {
       const continueButton = screen.getByRole("button", { name: "Continue" });
       expect(continueButton).not.toBeDisabled();
     });
+
+    it("displays an accessible requirement hint when source is unselected and clears it upon selection", () => {
+      render(<Migrate />);
+
+      // Initial state: hint is visible explaining source requirement
+      expect(
+        screen.getByText(/a source platform is required to proceed to the target step/i),
+      ).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: "Next" })).toBeDisabled();
+
+      // User selects Notion
+      fireEvent.click(screen.getByRole("button", { name: /notion/i }));
+
+      // Requirement hint is cleared
+      expect(
+        screen.queryByText(/a source platform is required to proceed to the target step/i),
+      ).not.toBeInTheDocument();
+      expect(screen.getByRole("button", { name: "Next" })).not.toBeDisabled();
+    });
+
+    it("displays an accessible requirement hint when target is unselected and clears it upon selection", () => {
+      advanceToStep(1);
+
+      // Initial step 1 state: hint is visible explaining target requirement
+      expect(
+        screen.getByText(/a destination platform is required to proceed to package upload/i),
+      ).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: "Next" })).toBeDisabled();
+
+      // User selects Huly
+      fireEvent.click(screen.getByRole("button", { name: /huly/i }));
+
+      // Requirement hint is cleared
+      expect(
+        screen.queryByText(/a destination platform is required to proceed to package upload/i),
+      ).not.toBeInTheDocument();
+      expect(screen.getByRole("button", { name: "Next" })).not.toBeDisabled();
+    });
+
+    it("clears file errors when correcting an invalid file upload with a valid one", () => {
+      advanceToStep(2);
+
+      const fileInput = screen.getByLabelText(/choose a \.portad package/i);
+      const invalidFile = new File(["bad"], "document.pdf", { type: "application/pdf" });
+
+      // Upload invalid file
+      fireEvent.change(fileInput, { target: { files: [invalidFile] } });
+      expect(screen.getByRole("alert")).toHaveTextContent(/invalid file type/i);
+      expect(screen.getByRole("button", { name: "Continue" })).toBeDisabled();
+
+      // Correct by uploading valid file
+      const validFile = new File(["good"], "backup.portad", { type: "application/zip" });
+      fireEvent.change(fileInput, { target: { files: [validFile] } });
+
+      // Error message is removed and Continue is enabled
+      expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+      expect(screen.getByRole("button", { name: "Continue" })).not.toBeDisabled();
+    });
+
+    it("preserves previously selected source and target when navigating back from step 2", () => {
+      advanceToStep(2);
+
+      // Go back to Target step
+      fireEvent.click(screen.getByRole("button", { name: "Back" }));
+      expect(screen.getByText("Choose a target")).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: "Next" })).not.toBeDisabled();
+
+      // Go back to Source step
+      fireEvent.click(screen.getByRole("button", { name: "Back" }));
+      expect(screen.getByText("Choose a source")).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: "Next" })).not.toBeDisabled();
+    });
   });
 });
