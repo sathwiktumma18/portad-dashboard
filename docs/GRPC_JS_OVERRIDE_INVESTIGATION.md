@@ -68,7 +68,7 @@ The first E2E attempt could not start because the Playwright Chromium browser wa
 
 **No change to `package.json` or `package-lock.json` should be made without maintainer approval.**
 
-## 8. Revisit Date and Ownership
+## Revisit Date and Ownership
 
 **Revisit Date:** February 4, 2027
 
