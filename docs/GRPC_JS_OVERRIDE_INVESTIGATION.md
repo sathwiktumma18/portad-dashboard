@@ -70,4 +70,12 @@ The first E2E attempt could not start because the Playwright Chromium browser wa
 
 ## Revisit date
 
-**February 4, 2027** — Recheck the original security rationale/advisory, current Firestore dependency requirements, and whether a compatible upstream version makes the override unnecessary.
+## 8. Revisit Date and Ownership
+
+**Revisit Date:** February 4, 2027
+
+**Owner:** A PortaD maintainer will be assigned at the time of the revisit.
+
+The assigned maintainer should review the original security rationale, current Firebase Firestore dependency requirements, and whether a compatible upstream version is available.
+
+No changes to the existing `@grpc/grpc-js` override should be made without maintainer approval.
