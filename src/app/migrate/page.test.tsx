@@ -603,5 +603,31 @@ describe("Migrate wizard", () => {
       expect(screen.getByText("Choose a source")).toBeInTheDocument();
       expect(screen.getByRole("button", { name: "Next" })).not.toBeDisabled();
     });
+
+    it("associates source control group fieldset with requirement hint when unselected", () => {
+      render(<Migrate />);
+      const fieldset = screen.getByRole("group", { name: /source platform choices/i });
+      expect(fieldset).toHaveAttribute("aria-describedby", "source-requirement-hint");
+    });
+
+    it("associates destination control group fieldset with requirement hint when unselected", () => {
+      advanceToStep(1);
+      const fieldset = screen.getByRole("group", { name: /destination platform choices/i });
+      expect(fieldset).toHaveAttribute("aria-describedby", "target-requirement-hint");
+    });
+
+    it("associates empty-package requirement hint with file input via aria-describedby and displays hint", () => {
+      advanceToStep(2);
+
+      const fileInput = screen.getByLabelText(/choose a \.portad package/i);
+      expect(fileInput).toHaveAttribute("aria-describedby", "file-requirement-hint");
+
+      const requirementHint = screen.getByText(
+        /a \.portad or \.zip package archive is required to advance/i,
+      );
+      expect(requirementHint).toBeInTheDocument();
+      expect(requirementHint).toHaveAttribute("id", "file-requirement-hint");
+      expect(screen.getByRole("button", { name: "Continue" })).toBeDisabled();
+    });
   });
 });
