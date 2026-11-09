@@ -48,6 +48,11 @@ export default function Migrate() {
   const [fileName, setFileName] = useState<string | null>(null);
   const [fileError, setFileError] = useState<string | null>(null);
   const [fileWarning, setFileWarning] = useState<string | null>(null);
+  const [showDiscardDialog, setShowDiscardDialog] = useState(false);
+  const [statusAnnouncement, setStatusAnnouncement] = useState<string | null>(null);
+
+  const hasActiveProgress =
+    source !== null || target !== null || fileName !== null || step > 0;
 
   const canAdvance =
     (step === 0 && source !== null) ||
@@ -56,10 +61,23 @@ export default function Migrate() {
 
   const handleSelectSource = (id: string) => {
     setSource(id);
+    setStatusAnnouncement(null);
   };
 
   const handleSelectTarget = (id: string) => {
     setTarget(id);
+    setStatusAnnouncement(null);
+  };
+
+  const handleDiscard = () => {
+    setSource(null);
+    setTarget(null);
+    setFileName(null);
+    setFileError(null);
+    setFileWarning(null);
+    setStep(0);
+    setShowDiscardDialog(false);
+    setStatusAnnouncement("Migration configuration discarded and reset.");
   };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -449,15 +467,26 @@ export default function Migrate() {
       </div>
 
       {/* Nav */}
-      <div className="mt-6 flex items-center justify-between">
-        <button
-          type="button"
-          onClick={() => setStep((current) => Math.max(0, current - 1) as Step)}
-          disabled={step === 0}
-          className="rounded-full border border-slate-300 bg-white px-5 py-2.5 text-sm font-medium text-slate-700 shadow-xs transition hover:border-slate-400 hover:bg-slate-50 hover:text-slate-900 disabled:cursor-not-allowed disabled:opacity-40 dark:border-white/15 dark:bg-transparent dark:text-frost-300 dark:shadow-none dark:hover:border-white/35 dark:hover:text-white"
-        >
-          Back
-        </button>
+      <div className="mt-6 flex items-center justify-between gap-4">
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => setStep((current) => Math.max(0, current - 1) as Step)}
+            disabled={step === 0}
+            className="rounded-full border border-slate-300 bg-white px-5 py-2.5 text-sm font-medium text-slate-700 shadow-xs transition hover:border-slate-400 hover:bg-slate-50 hover:text-slate-900 disabled:cursor-not-allowed disabled:opacity-40 dark:border-white/15 dark:bg-transparent dark:text-frost-300 dark:shadow-none dark:hover:border-white/35 dark:hover:text-white"
+          >
+            Back
+          </button>
+          {hasActiveProgress && (
+            <button
+              type="button"
+              onClick={() => setShowDiscardDialog(true)}
+              className="rounded-full border border-red-200 bg-white px-3.5 py-2 text-xs font-medium text-red-600 transition hover:bg-red-50 dark:border-red-500/30 dark:bg-transparent dark:text-red-400 dark:hover:bg-red-950/20"
+            >
+              Discard
+            </button>
+          )}
+        </div>
         <div className="font-mono text-xs text-slate-500 dark:text-frost-600">
           step {step + 1} / {STEP_LABELS.length}
         </div>
@@ -470,6 +499,53 @@ export default function Migrate() {
           {step === 2 ? "Continue" : "Next"}
         </button>
       </div>
+
+      {statusAnnouncement && (
+        <p role="status" className="sr-only">
+          {statusAnnouncement}
+        </p>
+      )}
+
+      {showDiscardDialog && (
+        <div
+          role="alertdialog"
+          aria-modal="true"
+          aria-labelledby="discard-dialog-title"
+          aria-describedby="discard-dialog-description"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-xs"
+        >
+          <div className="glass w-full max-w-md rounded-2xl p-6 shadow-xl dark:border-white/15 dark:bg-space-900">
+            <h3
+              id="discard-dialog-title"
+              className="text-lg font-semibold text-slate-900 dark:text-frost-50"
+            >
+              Discard migration in progress?
+            </h3>
+            <p
+              id="discard-dialog-description"
+              className="mt-2 text-sm leading-6 text-slate-600 dark:text-frost-400"
+            >
+              This will clear your selected source, destination platform, and attached package. This action cannot be undone.
+            </p>
+            <div className="mt-6 flex justify-end gap-3">
+              <button
+                type="button"
+                onClick={() => setShowDiscardDialog(false)}
+                className="rounded-full border border-slate-300 bg-white px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 dark:border-white/15 dark:bg-transparent dark:text-frost-300 dark:hover:bg-white/[0.04]"
+              >
+                Keep editing
+              </button>
+              <button
+                type="button"
+                onClick={handleDiscard}
+                className="rounded-full bg-red-600 px-4 py-2 text-xs font-semibold text-white shadow-xs hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-red-600"
+              >
+                Discard and restart
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

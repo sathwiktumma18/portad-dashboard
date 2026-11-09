@@ -629,5 +629,47 @@ describe("Migrate wizard", () => {
       expect(requirementHint).toHaveAttribute("id", "file-requirement-hint");
       expect(screen.getByRole("button", { name: "Continue" })).toBeDisabled();
     });
+
+    it("opens discard confirmation dialog and cancels without modifying state", () => {
+      advanceToStep(1);
+
+      // Discard button is visible
+      const discardButton = screen.getByRole("button", { name: "Discard" });
+      fireEvent.click(discardButton);
+
+      // Alert dialog is displayed
+      const dialog = screen.getByRole("alertdialog");
+      expect(dialog).toBeInTheDocument();
+      expect(screen.getByRole("heading", { name: /discard migration in progress\?/i })).toBeInTheDocument();
+
+      // Click "Keep editing"
+      fireEvent.click(screen.getByRole("button", { name: "Keep editing" }));
+
+      // Dialog closes and step remains intact
+      expect(screen.queryByRole("alertdialog")).not.toBeInTheDocument();
+      expect(screen.getByText("Choose a target")).toBeInTheDocument();
+      expect(screen.getByText("step 2 / 4")).toBeInTheDocument();
+    });
+
+    it("confirms discard, resets wizard to step 0, and clears all inputs", () => {
+      advanceToStep(2);
+
+      // Click Discard
+      const discardButton = screen.getByRole("button", { name: "Discard" });
+      fireEvent.click(discardButton);
+
+      // Click "Discard and restart"
+      const confirmButton = screen.getByRole("button", { name: "Discard and restart" });
+      fireEvent.click(confirmButton);
+
+      // Reset to Step 0 with source requirement hint visible
+      expect(screen.queryByRole("alertdialog")).not.toBeInTheDocument();
+      expect(screen.getByText("Choose a source")).toBeInTheDocument();
+      expect(screen.getByText("step 1 / 4")).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: "Next" })).toBeDisabled();
+      expect(
+        screen.getByText(/migration configuration discarded and reset/i),
+      ).toBeInTheDocument();
+    });
   });
 });
