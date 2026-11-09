@@ -130,7 +130,19 @@ export async function fetchWithTimeout(
     try {
       const data = await response.json();
       return { ok: true, data };
-    } catch {
+    } catch (parseErr: unknown) {
+      if (
+        ((parseErr as { name?: string })?.name === "AbortError") ||
+        controller.signal.aborted
+      ) {
+        return {
+          ok: false,
+          error: {
+            kind: "timeout",
+            message: `Request timed out after ${timeoutMs}ms.`,
+          },
+        };
+      }
       return {
         ok: false,
         error: {
@@ -210,30 +222,53 @@ export async function fetchCapabilities(): Promise<ApiResult<AdapterCapability[]
   }
 
   const entries: AdapterCapability[] = [];
-  for (const a of payload.adapters) {
-    const name = a.name || a.id || "Unknown";
-    const status: AdapterStatus = a.status === "Supported" ? "Supported" : "Planned";
-    const detail = a.description || (a.supported_features ? a.supported_features.join(", ") : "");
-    const direction = a.direction || "both";
+  try {
+    for (const a of payload.adapters) {
+      if (!a || typeof a !== "object") {
+        return {
+          data: FALLBACK_ENTRIES,
+          error: {
+            kind: "malformed",
+            message: "Response contains malformed adapter entries.",
+          },
+          isFallback: true,
+        };
+      }
+      const name = a.name || a.id || "Unknown";
+      const status: AdapterStatus = a.status === "Supported" ? "Supported" : "Planned";
+      const detail =
+        a.description ||
+        (Array.isArray(a.supported_features) ? a.supported_features.join(", ") : "");
+      const direction = a.direction || "both";
 
-    if (direction === "source" || direction === "both") {
-      entries.push({
-        id: `${a.id || name.toLowerCase()}-source`,
-        name,
-        kind: "source",
-        status,
-        detail,
-      });
+      if (direction === "source" || direction === "both") {
+        entries.push({
+          id: `${a.id || name.toLowerCase()}-source`,
+          name,
+          kind: "source",
+          status,
+          detail,
+        });
+      }
+      if (direction === "target" || direction === "both") {
+        entries.push({
+          id: `${a.id || name.toLowerCase()}-target`,
+          name,
+          kind: "target",
+          status,
+          detail,
+        });
+      }
     }
-    if (direction === "target" || direction === "both") {
-      entries.push({
-        id: `${a.id || name.toLowerCase()}-target`,
-        name,
-        kind: "target",
-        status,
-        detail,
-      });
-    }
+  } catch {
+    return {
+      data: FALLBACK_ENTRIES,
+      error: {
+        kind: "malformed",
+        message: "Failed to parse adapter capabilities payload.",
+      },
+      isFallback: true,
+    };
   }
 
   return {

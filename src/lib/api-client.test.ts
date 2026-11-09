@@ -77,6 +77,26 @@ describe("api-client", () => {
       }
     });
 
+    it("preserves timeout error when AbortError occurs while reading response json body", async () => {
+      const abortError = new Error("The operation was aborted");
+      abortError.name = "AbortError";
+
+      globalThis.fetch = vi.fn().mockResolvedValue({
+        ok: true,
+        status: 200,
+        json: async () => {
+          throw abortError;
+        },
+      });
+
+      const res = await fetchWithTimeout("https://api.example.com/test", {}, 10);
+      expect(res.ok).toBe(false);
+      if (!res.ok) {
+        expect(res.error.kind).toBe("timeout");
+        expect(res.error.message).toContain("timed out");
+      }
+    });
+
     it("returns network error when fetch throws network failure", async () => {
       globalThis.fetch = vi.fn().mockRejectedValue(new TypeError("Failed to fetch"));
 
@@ -148,6 +168,23 @@ describe("api-client", () => {
       const res = await fetchCapabilities();
       expect(res.isFallback).toBe(true);
       expect(res.error?.kind).toBe("malformed");
+      expect(res.data).toEqual(FALLBACK_ENTRIES);
+    });
+
+    it("falls back to bundled entries when adapters array contains malformed or null items", async () => {
+      globalThis.fetch = vi.fn().mockResolvedValue({
+        ok: true,
+        status: 200,
+        json: async () => ({
+          status: "ok",
+          adapters: [null, undefined, "invalid-adapter"],
+        }),
+      });
+
+      const res = await fetchCapabilities();
+      expect(res.isFallback).toBe(true);
+      expect(res.error?.kind).toBe("malformed");
+      expect(res.error?.message).toContain("malformed");
       expect(res.data).toEqual(FALLBACK_ENTRIES);
     });
   });
