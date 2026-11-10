@@ -97,6 +97,30 @@ describe("api-client", () => {
       }
     });
 
+    it("preserves timeout error when request abort signal is set while reading response json body", async () => {
+      const callerController = new AbortController();
+
+      globalThis.fetch = vi.fn().mockResolvedValue({
+        ok: true,
+        status: 200,
+        json: async () => {
+          callerController.abort();
+          throw new SyntaxError("Unexpected end of JSON input");
+        },
+      });
+
+      const res = await fetchWithTimeout(
+        "https://api.example.com/test",
+        { signal: callerController.signal },
+        5000,
+      );
+      expect(res.ok).toBe(false);
+      if (!res.ok) {
+        expect(res.error.kind).toBe("timeout");
+        expect(res.error.message).toContain("timed out");
+      }
+    });
+
     it("returns network error when fetch throws network failure", async () => {
       globalThis.fetch = vi.fn().mockRejectedValue(new TypeError("Failed to fetch"));
 
@@ -178,6 +202,23 @@ describe("api-client", () => {
         json: async () => ({
           status: "ok",
           adapters: [null, undefined, "invalid-adapter"],
+        }),
+      });
+
+      const res = await fetchCapabilities();
+      expect(res.isFallback).toBe(true);
+      expect(res.error?.kind).toBe("malformed");
+      expect(res.error?.message).toContain("malformed");
+      expect(res.data).toEqual(FALLBACK_ENTRIES);
+    });
+
+    it("falls back to bundled entries when adapters array contains arrays, empty objects, or non-string ids", async () => {
+      globalThis.fetch = vi.fn().mockResolvedValue({
+        ok: true,
+        status: 200,
+        json: async () => ({
+          status: "ok",
+          adapters: [[], {}, { id: 123, name: "Invalid" }],
         }),
       });
 

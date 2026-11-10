@@ -110,6 +110,16 @@ export async function fetchWithTimeout(
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
 
+  const callerSignal = options.signal;
+  const onCallerAbort = () => controller.abort();
+  if (callerSignal) {
+    if (callerSignal.aborted) {
+      controller.abort();
+    } else {
+      callerSignal.addEventListener("abort", onCallerAbort, { once: true });
+    }
+  }
+
   try {
     const response = await fetch(url, {
       ...options,
@@ -132,7 +142,7 @@ export async function fetchWithTimeout(
       return { ok: true, data };
     } catch (parseErr: unknown) {
       if (
-        ((parseErr as { name?: string })?.name === "AbortError") ||
+        (parseErr as { name?: string })?.name === "AbortError" ||
         controller.signal.aborted
       ) {
         return {
@@ -152,16 +162,19 @@ export async function fetchWithTimeout(
       };
     }
   } catch (err: unknown) {
+    if (
+      (err as { name?: string })?.name === "AbortError" ||
+      controller.signal.aborted
+    ) {
+      return {
+        ok: false,
+        error: {
+          kind: "timeout",
+          message: `Request timed out after ${timeoutMs}ms.`,
+        },
+      };
+    }
     if (err instanceof Error) {
-      if (err.name === "AbortError") {
-        return {
-          ok: false,
-          error: {
-            kind: "timeout",
-            message: `Request timed out after ${timeoutMs}ms.`,
-          },
-        };
-      }
       return {
         ok: false,
         error: {
@@ -179,6 +192,9 @@ export async function fetchWithTimeout(
     };
   } finally {
     clearTimeout(timer);
+    if (callerSignal) {
+      callerSignal.removeEventListener("abort", onCallerAbort);
+    }
   }
 }
 
@@ -224,7 +240,19 @@ export async function fetchCapabilities(): Promise<ApiResult<AdapterCapability[]
   const entries: AdapterCapability[] = [];
   try {
     for (const a of payload.adapters) {
-      if (!a || typeof a !== "object") {
+      if (
+        !a ||
+        typeof a !== "object" ||
+        Array.isArray(a) ||
+        (a.id !== undefined && typeof a.id !== "string") ||
+        (a.name !== undefined && typeof a.name !== "string") ||
+        (a.description !== undefined && typeof a.description !== "string") ||
+        (a.direction !== undefined &&
+          a.direction !== "source" &&
+          a.direction !== "target" &&
+          a.direction !== "both") ||
+        (!a.id && !a.name)
+      ) {
         return {
           data: FALLBACK_ENTRIES,
           error: {
