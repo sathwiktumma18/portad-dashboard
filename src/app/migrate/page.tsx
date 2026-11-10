@@ -99,6 +99,13 @@ export default function Migrate() {
       return;
     }
 
+    if (file.size === 0) {
+      setFileName(file.name);
+      setFileError("Selected package file is empty. Please choose a non-empty .portad or .zip archive.");
+      setFileWarning(null);
+      return;
+    }
+
     if (file.size > MAX_FILE_SIZE_BYTES) {
       setFileName(file.name);
       setFileError(null);

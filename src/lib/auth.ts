@@ -44,17 +44,17 @@ function emit(): void {
 
 function readPreview(): AuthSession | null {
   if (typeof window === "undefined") return null;
-  const raw = window.localStorage.getItem(PREVIEW_KEY);
-  if (!raw) return null;
   try {
-    const parsed = JSON.parse(raw) as { email?: string; since?: string };
-    if (!parsed || typeof parsed.email !== "string") return null;
+    const raw = window.localStorage.getItem(PREVIEW_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as { email?: unknown; since?: unknown };
+    if (!parsed || typeof parsed.email !== "string" || !parsed.email.trim()) return null;
     return {
-      email: parsed.email,
+      email: parsed.email.trim(),
       uid: null,
       provider: "preview",
       mode: "preview",
-      since: typeof parsed.since === "string" ? parsed.since : new Date().toISOString(),
+      since: typeof parsed.since === "string" && parsed.since.trim() ? parsed.since : new Date().toISOString(),
       expiresAt: null,
       token: null,
     };
@@ -65,7 +65,11 @@ function readPreview(): AuthSession | null {
 
 function clearPreviewStorage(): void {
   if (typeof window === "undefined") return;
-  window.localStorage.removeItem(PREVIEW_KEY);
+  try {
+    window.localStorage.removeItem(PREVIEW_KEY);
+  } catch {
+    // Ignore storage access errors (e.g., private browsing or restricted storage).
+  }
   previewSession = null;
 }
 
@@ -205,12 +209,25 @@ export async function signInWithGoogle(): Promise<void> {
 }
 
 export function signInPreview(): void {
+  const since = new Date().toISOString();
   const session = {
     email: "preview@portad.local",
-    since: new Date().toISOString(),
+    since,
   };
-  window.localStorage.setItem(PREVIEW_KEY, JSON.stringify(session));
-  previewSession = readPreview();
+  try {
+    window.localStorage.setItem(PREVIEW_KEY, JSON.stringify(session));
+    previewSession = readPreview();
+  } catch {
+    previewSession = {
+      email: session.email,
+      uid: null,
+      provider: "preview",
+      mode: "preview",
+      since,
+      expiresAt: null,
+      token: null,
+    };
+  }
   emit();
 }
 
