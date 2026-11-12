@@ -396,7 +396,10 @@ export default function Migrate() {
                       transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
                       className="overflow-hidden"
                     >
-                      <div className="mt-4 overflow-x-auto no-scrollbar rounded-2xl border border-slate-200 bg-slate-900 text-frost-100 p-4 font-mono text-[13px] leading-7 dark:border-white/10 dark:bg-space-950/70">
+                      <div
+                        data-testid="package-preview"
+                        className="mt-4 overflow-x-auto no-scrollbar rounded-2xl border border-slate-200 bg-slate-900 text-frost-100 p-4 font-mono text-[13px] leading-7 dark:border-white/10 dark:bg-space-950/70"
+                      >
                         <div className="mb-2 text-slate-400 dark:text-frost-600">
                           preview · {fileName}
                         </div>
@@ -439,7 +442,10 @@ export default function Migrate() {
                   Hosted runs are queued for the hosted plane. Until then, the exact
                   pipeline runs locally:
                 </p>
-                <div className="mt-5 overflow-hidden rounded-2xl border border-slate-200 bg-slate-900 dark:border-white/10 dark:bg-space-950">
+                <div
+                  data-testid="cli-terminal"
+                  className="mt-5 overflow-hidden rounded-2xl border border-slate-200 bg-slate-900 dark:border-white/10 dark:bg-space-950"
+                >
                   <div className="flex items-center gap-2 border-b border-white/10 bg-white/[0.03] px-4 py-2.5">
                     <span className="h-2.5 w-2.5 rounded-full bg-[#ff5f57]" />
                     <span className="h-2.5 w-2.5 rounded-full bg-[#febc2e]" />
@@ -448,7 +454,7 @@ export default function Migrate() {
                   </div>
                   <div className="p-4 font-mono text-sm leading-7 text-frost-300">
                     {CLI_RUN.map((cmd) => (
-                      <div key={cmd}>
+                      <div key={cmd} data-testid="cli-command">
                         <span className="text-brand-400">$ </span>
                         {cmd}
                       </div>
