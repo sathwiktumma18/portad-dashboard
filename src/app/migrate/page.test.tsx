@@ -629,5 +629,76 @@ describe("Migrate wizard", () => {
       expect(requirementHint).toHaveAttribute("id", "file-requirement-hint");
       expect(screen.getByRole("button", { name: "Continue" })).toBeDisabled();
     });
+
+    it("opens discard confirmation dialog and cancels without modifying state", () => {
+      advanceToStep(1);
+
+      // Discard button is visible
+      const discardButton = screen.getByRole("button", { name: "Discard" });
+      fireEvent.click(discardButton);
+
+      // Alert dialog is displayed
+      const dialog = screen.getByRole("alertdialog");
+      expect(dialog).toBeInTheDocument();
+      expect(screen.getByRole("heading", { name: /discard migration in progress\?/i })).toBeInTheDocument();
+
+      // Click "Keep editing"
+      fireEvent.click(screen.getByRole("button", { name: "Keep editing" }));
+
+      // Dialog closes and step remains intact
+      expect(screen.queryByRole("alertdialog")).not.toBeInTheDocument();
+      expect(screen.getByText("Choose a target")).toBeInTheDocument();
+      expect(screen.getByText("step 2 / 4")).toBeInTheDocument();
+    });
+
+    it("confirms discard, resets wizard to step 0, and clears all inputs", () => {
+      advanceToStep(2);
+
+      // Click Discard
+      const discardButton = screen.getByRole("button", { name: "Discard" });
+      fireEvent.click(discardButton);
+
+      // Click "Discard and restart"
+      const confirmButton = screen.getByRole("button", { name: "Discard and restart" });
+      fireEvent.click(confirmButton);
+
+      // Reset to Step 0 with source requirement hint visible
+      expect(screen.queryByRole("alertdialog")).not.toBeInTheDocument();
+      expect(screen.getByText("Choose a source")).toBeInTheDocument();
+      expect(screen.getByText("step 1 / 4")).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: "Next" })).toBeDisabled();
+      expect(
+        screen.getByText(/migration configuration discarded and reset/i),
+      ).toBeInTheDocument();
+    });
+
+    it("rejects empty 0-byte package files and keeps Continue disabled", () => {
+      advanceToStep(2);
+
+      const fileInput = screen.getByLabelText(/click to choose a \.portad package/i);
+      const emptyFile = new File([], "empty.portad", { type: "application/zip" });
+
+      fireEvent.change(fileInput, { target: { files: [emptyFile] } });
+
+      expect(screen.getByRole("alert")).toHaveTextContent(/selected package file is empty/i);
+      expect(screen.getByRole("button", { name: "Continue" })).toBeDisabled();
+      expect(screen.queryByText(/preview · empty\.portad/i)).not.toBeInTheDocument();
+    });
+
+    it("resets valid progression immediately when a valid file is replaced with an invalid file", () => {
+      advanceToStep(2);
+
+      const fileInput = screen.getByLabelText(/click to choose a \.portad package/i);
+      const validFile = new File(["payload"], "good.portad", { type: "application/zip" });
+      const badFile = new File(["bad"], "notes.txt", { type: "text/plain" });
+
+      fireEvent.change(fileInput, { target: { files: [validFile] } });
+      expect(screen.getByRole("button", { name: "Continue" })).toBeEnabled();
+      expect(screen.getByText(/preview · good\.portad/i)).toBeInTheDocument();
+
+      fireEvent.change(fileInput, { target: { files: [badFile] } });
+      expect(screen.getByRole("button", { name: "Continue" })).toBeDisabled();
+      expect(screen.getByRole("alert")).toHaveTextContent(/invalid file type/i);
+    });
   });
 });
