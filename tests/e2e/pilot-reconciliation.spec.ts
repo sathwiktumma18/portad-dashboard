@@ -85,7 +85,7 @@ test.describe("Sprint 3 End-to-End Pilot & Reconciliation", () => {
 
     // Search non-existent platform -> empty state
     await page.getByRole("searchbox", { name: /search platforms/i }).fill("nonexistent-xyz");
-    await expect(page.getByRole("status")).toContainText(
+    await expect(page.getByRole("main").getByRole("status")).toContainText(
       "No platforms found. Try a different search or select another status filter.",
     );
   });
