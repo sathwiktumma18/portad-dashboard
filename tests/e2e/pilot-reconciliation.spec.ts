@@ -53,7 +53,7 @@ test.describe("Sprint 3 End-to-End Pilot & Reconciliation", () => {
       buffer: Buffer.from("not-a-package"),
     });
 
-    await expect(page.getByRole("alert")).toContainText(/Invalid file type/i);
+    await expect(page.locator("#file-error-msg")).toContainText(/Invalid file type/i);
     await expect(page.getByRole("button", { name: "Continue" })).toBeDisabled();
 
     // Recovery path: replace with valid .portad file
@@ -63,7 +63,7 @@ test.describe("Sprint 3 End-to-End Pilot & Reconciliation", () => {
       buffer: Buffer.from("valid-package"),
     });
 
-    await expect(page.getByRole("alert")).toHaveCount(0);
+    await expect(page.locator("#file-error-msg")).toHaveCount(0);
     await expect(page.getByText("preview · recovered.portad")).toBeVisible();
     await expect(page.getByRole("button", { name: "Continue" })).toBeEnabled();
   });
@@ -73,8 +73,8 @@ test.describe("Sprint 3 End-to-End Pilot & Reconciliation", () => {
   }) => {
     await page.goto("/compatibility");
 
-    await expect(page.getByRole("heading", { name: "Sources" })).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Targets" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Sources", exact: true })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Targets", exact: true })).toBeVisible();
     await expect(page.getByText("Huly")).toBeVisible();
 
     // Filter by Planned
@@ -98,7 +98,7 @@ test.describe("Sprint 3 End-to-End Pilot & Reconciliation", () => {
     await expect(page.getByRole("heading", { name: "No jobs yet" })).toBeVisible();
     await expect(page.getByText("portad jobs list")).toBeVisible();
 
-    await page.getByRole("link", { name: "Start a migration" }).click();
+    await page.getByRole("main").getByRole("link", { name: "Start a migration" }).click();
     await expect(page).toHaveURL(/\/migrate$/);
   });
 
@@ -116,7 +116,7 @@ test.describe("Sprint 3 End-to-End Pilot & Reconciliation", () => {
       page.getByText(/This session is not a real account/i),
     ).toBeVisible();
 
-    await page.getByRole("button", { name: "Sign out" }).click();
+    await page.getByRole("main").getByRole("button", { name: "Sign out" }).click();
     await expect(page.getByRole("heading", { name: "Sign in to PortaD" })).toBeVisible();
   });
 });
