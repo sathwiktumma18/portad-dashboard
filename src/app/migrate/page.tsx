@@ -22,7 +22,7 @@ const TARGETS = [
 const CLI_RUN = [
   "portad export notion",
   "portad transform --target huly",
-  "portad import huly --resume",
+  "portad import huly workspace.portad --resume",
 ];
 
 const TREE = [

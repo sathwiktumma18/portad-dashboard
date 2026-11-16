@@ -37,7 +37,9 @@ test.describe("Sprint 3 End-to-End Pilot & Reconciliation", () => {
       await expect(cliCommands).toHaveCount(3);
       await expect(cliCommands.nth(0)).toContainText("portad export notion");
       await expect(cliCommands.nth(1)).toContainText("portad transform --target huly");
-      await expect(cliCommands.nth(2)).toContainText("portad import huly --resume");
+      await expect(cliCommands.nth(2)).toContainText(
+        "portad import huly workspace.portad --resume",
+      );
     });
 
     test("blocks invalid package upload and recovers cleanly when real .portad package is selected", async ({
