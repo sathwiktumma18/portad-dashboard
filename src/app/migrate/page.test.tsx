@@ -304,7 +304,7 @@ describe("Migrate wizard", () => {
         screen.getByText("portad transform --target huly"),
       ).toBeInTheDocument();
       expect(
-        screen.getByText("portad import huly --resume"),
+        screen.getByText("portad import huly workspace.portad --resume"),
       ).toBeInTheDocument();
     });
 
