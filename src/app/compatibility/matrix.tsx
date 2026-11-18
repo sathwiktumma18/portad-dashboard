@@ -133,56 +133,73 @@ export default function CompatibilityMatrix() {
           ))}
         </div>
       </div>
-      {visible.length === 0 ? (
-        <p
-          role="status"
-          className="mt-10 rounded-2xl border border-dashed border-slate-300 p-6 text-center text-sm text-slate-500 dark:border-white/12 dark:text-frost-600"
-        >
-          No platforms found. Try a different search or select another status
-          filter.
-        </p>
-      ) : (
-        <div className="mt-10 grid gap-6 md:grid-cols-2">
-          {(["source", "target"] as const).map(
-            (kind) =>
-              groups[kind].length > 0 && (
-                <section key={kind}>
-                  <h2 className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-slate-500 dark:text-frost-600">
-                    {kind === "source" ? "Sources" : "Targets"}
-                  </h2>
-                  <ul className="space-y-3">
-                    <AnimatePresence initial={false}>
-                      {groups[kind].map((item) => (
-                        <motion.li
-                          key={`${kind}-${item.name}-${item.detail}`}
-                          layout
-                          initial={{ opacity: 0, y: 12 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: -8 }}
-                          transition={{
-                            duration: 0.25,
-                            ease: [0.16, 1, 0.3, 1],
-                          }}
-                          className="glass flex items-start justify-between gap-4 rounded-2xl p-4 transition hover:border-brand-400/30"
-                        >
-                          <div className="min-w-0">
-                            <p className="font-medium text-slate-900 dark:text-frost-100">
-                              {item.name}
-                            </p>
-                            <p className="mt-0.5 text-xs leading-5 text-slate-500 dark:text-frost-500">
-                              {item.detail}
-                            </p>
-                          </div>
-                          <Badge status={item.status} />
-                        </motion.li>
-                      ))}
-                    </AnimatePresence>
-                  </ul>
-                </section>
-              ),
-          )}
-        </div>
-      )}
+      <AnimatePresence initial={false} mode="wait" propagate>
+        {visible.length === 0 ? (
+          <p
+            key="empty"
+            role="status"
+            className="mt-10 rounded-2xl border border-dashed border-slate-300 p-6 text-center text-sm text-slate-500 dark:border-white/12 dark:text-frost-600"
+          >
+            No platforms found. Try a different search or select another status
+            filter.
+          </p>
+        ) : (
+          <motion.div
+            key="results"
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+            className="mt-10 grid gap-6 md:grid-cols-2"
+          >
+            <AnimatePresence initial={false} propagate>
+              {(["source", "target"] as const).map(
+                (kind) =>
+                  groups[kind].length > 0 && (
+                    <motion.section
+                      key={kind}
+                      exit={{ opacity: 0 }}
+                      transition={{
+                        duration: 0.25,
+                        ease: [0.16, 1, 0.3, 1],
+                      }}
+                    >
+                      <h2 className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-slate-500 dark:text-frost-600">
+                        {kind === "source" ? "Sources" : "Targets"}
+                      </h2>
+                      <ul className="space-y-3">
+                        <AnimatePresence initial={false} propagate>
+                          {groups[kind].map((item) => (
+                            <motion.li
+                              key={`${kind}-${item.name}-${item.detail}`}
+                              layout
+                              initial={{ opacity: 0, y: 12 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              exit={{ opacity: 0, y: -8 }}
+                              transition={{
+                                duration: 0.25,
+                                ease: [0.16, 1, 0.3, 1],
+                              }}
+                              className="glass flex items-start justify-between gap-4 rounded-2xl p-4 transition hover:border-brand-400/30"
+                            >
+                              <div className="min-w-0">
+                                <p className="font-medium text-slate-900 dark:text-frost-100">
+                                  {item.name}
+                                </p>
+                                <p className="mt-0.5 text-xs leading-5 text-slate-500 dark:text-frost-500">
+                                  {item.detail}
+                                </p>
+                              </div>
+                              <Badge status={item.status} />
+                            </motion.li>
+                          ))}
+                        </AnimatePresence>
+                      </ul>
+                    </motion.section>
+                  ),
+              )}
+            </AnimatePresence>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

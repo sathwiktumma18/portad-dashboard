@@ -89,14 +89,27 @@ function SignInCard() {
 
   function submit(event: FormEvent) {
     event.preventDefault();
-    if (!email.trim() || !password) {
+    const trimmedEmail = email.trim();
+    if (!trimmedEmail || !password) {
       setError("Enter an email and password.");
+      return;
+    }
+    if (trimmedEmail.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
+      setError("Enter a valid email address.");
+      return;
+    }
+    if (password.length > 128) {
+      setError("Password must be 128 characters or fewer.");
+      return;
+    }
+    if (mode === "signup" && password.length < 6) {
+      setError("Password must be at least 6 characters.");
       return;
     }
     void run("email", () =>
       mode === "signin"
-        ? signInEmail(email.trim(), password)
-        : signUpEmail(email.trim(), password),
+        ? signInEmail(trimmedEmail, password)
+        : signUpEmail(trimmedEmail, password),
     );
   }
 
@@ -120,7 +133,7 @@ function SignInCard() {
               page — or open a browser-local preview session.
             </p>
 
-            <form onSubmit={submit} className="mt-7 space-y-3 text-left">
+            <form onSubmit={submit} noValidate className="mt-7 space-y-3 text-left">
               <label className="block">
                 <span className="mb-1.5 block text-xs font-medium text-slate-700 dark:text-frost-400">
                   Email
@@ -129,7 +142,12 @@ function SignInCard() {
                   type="email"
                   autoComplete="email"
                   value={email}
-                  onChange={(event) => setEmail(event.target.value)}
+                  aria-invalid={error ? true : undefined}
+                  aria-describedby={error ? "account-form-error" : undefined}
+                  onChange={(event) => {
+                    setEmail(event.target.value);
+                    if (error) setError(null);
+                  }}
                   placeholder="you@example.com"
                   className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 shadow-xs outline-none transition focus:border-brand-500 focus:ring-1 focus:ring-brand-500 dark:border-white/12 dark:bg-space-950/70 dark:text-frost-100 dark:placeholder:text-frost-600 dark:shadow-none dark:focus:border-brand-400/60 dark:focus:ring-0"
                 />
@@ -142,14 +160,23 @@ function SignInCard() {
                   type="password"
                   autoComplete={mode === "signin" ? "current-password" : "new-password"}
                   value={password}
-                  onChange={(event) => setPassword(event.target.value)}
+                  aria-invalid={error ? true : undefined}
+                  aria-describedby={error ? "account-form-error" : undefined}
+                  onChange={(event) => {
+                    setPassword(event.target.value);
+                    if (error) setError(null);
+                  }}
                   placeholder="••••••••"
                   className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 shadow-xs outline-none transition focus:border-brand-500 focus:ring-1 focus:ring-brand-500 dark:border-white/12 dark:bg-space-950/70 dark:text-frost-100 dark:placeholder:text-frost-600 dark:shadow-none dark:focus:border-brand-400/60 dark:focus:ring-0"
                 />
               </label>
 
               {error && (
-                <p className="rounded-xl border border-rose-400/30 bg-rose-400/10 px-3 py-2 text-xs leading-5 text-rose-700 dark:text-rose-200">
+                <p
+                  id="account-form-error"
+                  role="alert"
+                  className="rounded-xl border border-rose-400/30 bg-rose-400/10 px-3 py-2 text-xs leading-5 text-rose-700 dark:text-rose-200"
+                >
                   {error}
                 </p>
               )}
@@ -215,16 +242,31 @@ function SignInCard() {
 }
 
 function SessionCard({ session }: { session: AuthSession }) {
-  const [copied, setCopied] = useState(false);
+  const [copyState, setCopyState] = useState<"idle" | "copied" | "failed">("idle");
+  const [signingOut, setSigningOut] = useState(false);
 
   async function copyToken() {
     if (!session.token) return;
     try {
+      if (!navigator.clipboard?.writeText) {
+        throw new Error("Clipboard API unavailable");
+      }
       await navigator.clipboard.writeText(session.token);
-      setCopied(true);
-      window.setTimeout(() => setCopied(false), 2000);
+      setCopyState("copied");
+      window.setTimeout(() => setCopyState("idle"), 2000);
     } catch {
-      setCopied(false);
+      setCopyState("failed");
+      window.setTimeout(() => setCopyState("idle"), 2500);
+    }
+  }
+
+  async function handleSignOut() {
+    if (signingOut) return;
+    setSigningOut(true);
+    try {
+      await signOut();
+    } finally {
+      setSigningOut(false);
     }
   }
 
@@ -293,7 +335,11 @@ function SessionCard({ session }: { session: AuthSession }) {
               onClick={() => void copyToken()}
               className="mt-4 w-full rounded-2xl border border-slate-300 bg-white px-4 py-2.5 text-xs font-medium text-slate-700 shadow-xs transition hover:border-slate-400 hover:bg-slate-50 hover:text-slate-900 dark:border-white/12 dark:bg-white/[0.04] dark:text-frost-200 dark:shadow-none dark:hover:border-white/30 dark:hover:text-white"
             >
-              {copied ? "Token copied" : "Copy ID token"}
+              {copyState === "copied"
+                ? "Token copied"
+                : copyState === "failed"
+                  ? "Clipboard unavailable"
+                  : "Copy ID token"}
             </button>
           )}
 
@@ -305,10 +351,11 @@ function SessionCard({ session }: { session: AuthSession }) {
 
           <button
             type="button"
-            onClick={() => void signOut()}
-            className="mt-6 w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-medium text-slate-700 shadow-xs transition hover:border-slate-400 hover:bg-slate-50 hover:text-slate-900 dark:border-white/15 dark:bg-transparent dark:text-frost-300 dark:shadow-none dark:hover:border-white/35 dark:hover:text-white"
+            disabled={signingOut}
+            onClick={() => void handleSignOut()}
+            className="mt-6 w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-medium text-slate-700 shadow-xs transition hover:border-slate-400 hover:bg-slate-50 hover:text-slate-900 disabled:cursor-not-allowed disabled:opacity-60 dark:border-white/15 dark:bg-transparent dark:text-frost-300 dark:shadow-none dark:hover:border-white/35 dark:hover:text-white"
           >
-            Sign out
+            {signingOut ? "Signing out…" : "Sign out"}
           </button>
         </div>
       </Reveal>
