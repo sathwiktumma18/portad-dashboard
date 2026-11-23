@@ -4,13 +4,12 @@ import { describe, it, expect, afterEach, vi } from "vitest";
 
 import CompatibilityMatrix from "./matrix";
 
-vi.mock("motion/react", () => ({
-  AnimatePresence: ({ children }: { children: React.ReactNode }) => children,
-  motion: {
-    li: ({
+vi.mock("motion/react", () => {
+  const createMotionComponent = (tag: "div" | "section" | "li") => {
+    const MockMotionComponent = ({
       children,
       ...props
-    }: React.ComponentProps<"li"> & Record<string, unknown>) => {
+    }: { children?: React.ReactNode } & Record<string, unknown>) => {
       const motionKeys = new Set([
         "initial",
         "animate",
@@ -28,13 +27,28 @@ vi.mock("motion/react", () => ({
         "layout",
         "layoutId",
       ]);
+
       const domProps = Object.fromEntries(
         Object.entries(props).filter(([key]) => !motionKeys.has(key)),
       );
-      return React.createElement("li", domProps, children);
+
+      return React.createElement(tag, domProps, children);
+    };
+
+    MockMotionComponent.displayName = `MockMotion(${tag})`;
+
+    return MockMotionComponent;
+  };
+
+  return {
+    AnimatePresence: ({ children }: { children: React.ReactNode }) => children,
+    motion: {
+      div: createMotionComponent("div"),
+      section: createMotionComponent("section"),
+      li: createMotionComponent("li"),
     },
-  },
-}));
+  };
+});
 
 afterEach(() => {
   cleanup();
