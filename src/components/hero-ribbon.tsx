@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 
 const RIBBON_PATH_A = "M -80 600 C 300 470, 720 260, 1520 55";
 const RIBBON_PATH_B = "M -80 540 C 340 390, 760 310, 1520 95";
@@ -9,7 +9,7 @@ const ECHO_PATH_A = "M -80 650 C 360 510, 780 210, 1520 120";
 const ECHO_PATH_B = "M -80 610 C 320 450, 740 280, 1520 75";
 
 export default function HeroRibbon() {
-  const reduce = false;
+  const reduce = Boolean(useReducedMotion());
 
   return (
     <div

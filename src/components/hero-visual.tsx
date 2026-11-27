@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { motion, useMotionValue, useSpring } from "motion/react";
+import { motion, useMotionValue, useReducedMotion, useSpring } from "motion/react";
 
 const INPUTS = [
   { id: "pages", label: "Notion Pages", meta: "412 docs", y: 24, delay: 0.08 },
@@ -19,7 +19,7 @@ const TILT_SPRING = { stiffness: 200, damping: 22, mass: 0.7 };
 const EASE = [0.22, 1, 0.36, 1] as const;
 
 export default function HeroVisual() {
-  const reduce = false;
+  const reduce = Boolean(useReducedMotion());
   const [runKey, setRunKey] = useState(0);
 
   const rotateX = useMotionValue(0);

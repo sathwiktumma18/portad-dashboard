@@ -280,6 +280,16 @@ body {
   will-change: transform;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .animate-aurora-3d-one,
+  .animate-aurora-3d-two,
+  .marquee,
+  .marquee-dance-pill {
+    animation: none;
+    transform: none;
+  }
+}
+
 .light .glass:hover {
   border-color: rgba(8, 145, 178, 0.38);
   box-shadow:
