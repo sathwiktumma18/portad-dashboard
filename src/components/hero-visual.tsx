@@ -3,65 +3,89 @@
 import { useState } from "react";
 import { motion, useMotionValue, useReducedMotion, useSpring } from "motion/react";
 
-const ARCHIVE_LAYERS = [
+const TILT_SPRING = { stiffness: 200, damping: 22, mass: 0.65 };
+
+const CUBE_FACES = [
   {
-    file: "checksums.txt",
-    role: "SHA-256 verification seal",
-    meta: "sha256:9f2c…e41a",
-    status: "Verified",
-    zOffset: 54,
-    accent: true,
+    id: "front",
+    label: "manifest.json",
+    sub: "Spec 0.1 · 1,284 records",
+    accent: "from-orange-500/25 via-amber-500/10 to-transparent",
+    border: "border-orange-400/50",
+    dot: "bg-orange-400",
+    transform: (d: number) => `rotateY(0deg) translateZ(${d}px)`,
   },
   {
-    file: "entities/",
-    role: "Notion → Huly neutral records",
-    meta: "1,284 records",
-    status: "Mapped",
-    zOffset: 36,
-    accent: false,
+    id: "back",
+    label: "checksums.txt",
+    sub: "SHA-256 · 5/5 layers",
+    accent: "from-emerald-500/25 via-teal-500/10 to-transparent",
+    border: "border-emerald-400/50",
+    dot: "bg-emerald-400",
+    transform: (d: number) => `rotateY(180deg) translateZ(${d}px)`,
   },
   {
-    file: "attachments/",
-    role: "Path-contained binary assets",
-    meta: "12 files · 84.2 MB",
-    status: "Verified",
-    zOffset: 18,
-    accent: false,
+    id: "right",
+    label: "entities/",
+    sub: "Notion → Huly map",
+    accent: "from-indigo-500/25 via-violet-500/10 to-transparent",
+    border: "border-indigo-400/50",
+    dot: "bg-indigo-400",
+    transform: (d: number) => `rotateY(90deg) translateZ(${d}px)`,
   },
   {
-    file: "manifest.json",
-    role: "Spec 0.1 schema & checkpoint",
-    meta: "checkpoint 4/6",
-    status: "Resumable",
-    zOffset: 0,
-    accent: false,
+    id: "left",
+    label: "attachments/",
+    sub: "12 files · 84.2 MB",
+    accent: "from-teal-500/25 via-cyan-500/10 to-transparent",
+    border: "border-teal-400/50",
+    dot: "bg-teal-400",
+    transform: (d: number) => `rotateY(-90deg) translateZ(${d}px)`,
+  },
+  {
+    id: "top",
+    label: "notion.portad",
+    sub: "Verified archive",
+    accent: "from-amber-500/25 via-orange-500/10 to-transparent",
+    border: "border-amber-400/50",
+    dot: "bg-amber-400",
+    transform: (d: number) => `rotateX(90deg) translateZ(${d}px)`,
+  },
+  {
+    id: "bottom",
+    label: "diff.json",
+    sub: "0 silent drops",
+    accent: "from-rose-500/25 via-orange-500/10 to-transparent",
+    border: "border-rose-400/50",
+    dot: "bg-rose-400",
+    transform: (d: number) => `rotateX(-90deg) translateZ(${d}px)`,
   },
 ];
 
-const TILT_SPRING = { stiffness: 220, damping: 24, mass: 0.7 };
-const LAYER_TRANSITION = { duration: 0.42, ease: [0.22, 1, 0.36, 1] as const };
-
 export default function HeroVisual() {
   const reduce = useReducedMotion();
-  const [exploded, setExploded] = useState(true);
+  const [exploded, setExploded] = useState(false);
+  const [spinning, setSpinning] = useState(true);
 
-  const rotateX = useMotionValue(reduce ? 0 : 7);
-  const rotateY = useMotionValue(reduce ? 0 : -9);
+  const rotateX = useMotionValue(0);
+  const rotateY = useMotionValue(0);
   const springX = useSpring(rotateX, TILT_SPRING);
   const springY = useSpring(rotateY, TILT_SPRING);
+
+  const faceDistance = exploded ? 112 : 84;
 
   function handlePointerMove(e: React.PointerEvent<HTMLDivElement>) {
     if (reduce) return;
     const rect = e.currentTarget.getBoundingClientRect();
     const px = (e.clientX - rect.left) / rect.width - 0.5;
     const py = (e.clientY - rect.top) / rect.height - 0.5;
-    rotateX.set(7 - py * 12);
-    rotateY.set(-9 + px * 14);
+    rotateX.set(-py * 24);
+    rotateY.set(px * 28);
   }
 
   function handlePointerLeave() {
-    rotateX.set(reduce ? 0 : 7);
-    rotateY.set(reduce ? 0 : -9);
+    rotateX.set(0);
+    rotateY.set(0);
   }
 
   return (
@@ -70,131 +94,148 @@ export default function HeroVisual() {
       onPointerMove={handlePointerMove}
       onPointerLeave={handlePointerLeave}
     >
-      <motion.div
-        style={
-          reduce
-            ? undefined
-            : {
-                rotateX: springX,
-                rotateY: springY,
-                transformStyle: "preserve-3d",
-              }
-        }
-        className="glass-strong hairline relative w-full rounded-2xl p-6"
-      >
-        {/* Top instrument header */}
-        <div
-          className="flex items-center justify-between gap-3 border-b pb-4"
-          style={{ borderColor: "var(--border-hairline)" }}
-        >
-          <div className="min-w-0">
-            <p className="font-mono text-xs text-frost-500">notion.portad · spec 0.1</p>
+      <div className="glass-strong hairline relative overflow-hidden rounded-3xl p-6">
+        {/* Top bar */}
+        <div className="flex items-center justify-between gap-2">
+          <div>
+            <p className="font-mono text-xs text-brand-600 dark:text-brand-400">
+              3D Vault · notion.portad
+            </p>
             <p className="mt-0.5 text-sm font-medium text-frost-100">
-              Notion → Huly package
+              Interactive package cube
             </p>
           </div>
-          <button
-            type="button"
-            onClick={() => setExploded((prev) => !prev)}
-            className="shrink-0 rounded-lg border px-2.5 py-1.5 font-mono text-xs text-frost-300 transition-colors hover:text-frost-100"
-            style={{
-              borderColor: "var(--border-hairline-strong)",
-              backgroundColor: "var(--surface-raised)",
-            }}
-          >
-            {exploded ? "Collapse 3D" : "Inspect 3D layers"}
-          </button>
-        </div>
-
-        {/* 3D Stacked Archive Layers */}
-        <div className="preserve-3d relative my-5 space-y-2.5">
-          {ARCHIVE_LAYERS.map((layer, index) => (
-            <motion.div
-              key={layer.file}
-              animate={
-                reduce
-                  ? undefined
-                  : {
-                      z: exploded ? layer.zOffset : 0,
-                      y: exploded ? index * -2 : 0,
-                      scale: exploded ? 1 + (3 - index) * 0.008 : 1,
-                    }
-              }
-              transition={LAYER_TRANSITION}
-              className="preserve-3d flex items-center justify-between gap-3 rounded-xl border px-3.5 py-3 transition-colors"
+          <div className="flex items-center gap-1.5">
+            <button
+              type="button"
+              onClick={() => setSpinning((s) => !s)}
+              className="rounded-lg border px-2.5 py-1 font-mono text-[11px] text-frost-300 transition-colors hover:text-frost-100"
               style={{
-                borderColor: layer.accent
-                  ? "rgba(59, 130, 246, 0.35)"
-                  : "var(--border-hairline)",
-                backgroundColor: layer.accent
-                  ? "rgba(37, 99, 235, 0.08)"
-                  : "var(--surface-raised)",
+                borderColor: "var(--border-hairline)",
+                backgroundColor: "var(--surface-raised)",
               }}
             >
-              <div className="min-w-0">
-                <div className="flex items-center gap-2">
-                  <span
-                    aria-hidden
-                    className={
-                      "h-1.5 w-1.5 rounded-full " +
-                      (layer.accent ? "bg-brand-500" : "bg-emerald-500")
-                    }
-                  />
-                  <span className="truncate font-mono text-xs font-medium text-frost-100">
-                    {layer.file}
-                  </span>
-                </div>
-                <p className="mt-0.5 truncate pl-3.5 text-xs text-frost-500">
-                  {layer.role}
-                </p>
-              </div>
-              <div className="shrink-0 text-right font-mono tabular-nums">
-                <span className="block text-xs text-frost-200">{layer.meta}</span>
-                <span
-                  className={
-                    "block text-[11px] " +
-                    (layer.accent
-                      ? "text-brand-600 dark:text-brand-400"
-                      : "text-emerald-600 dark:text-emerald-400")
-                  }
-                >
-                  {layer.status}
-                </span>
-              </div>
-            </motion.div>
-          ))}
+              {spinning ? "Pause" : "Spin"}
+            </button>
+            <button
+              type="button"
+              onClick={() => setExploded((prev) => !prev)}
+              className="rounded-lg border border-orange-500/40 bg-orange-500/15 px-2.5 py-1 font-mono text-[11px] font-medium text-orange-600 transition-colors hover:bg-orange-500/25 dark:text-orange-300"
+            >
+              {exploded ? "Assemble" : "Explode 3D"}
+            </button>
+          </div>
         </div>
 
-        {/* Pipeline verification footer */}
+        {/* True 3D Cube Stage */}
+        <div className="perspective-stage relative mx-auto my-6 flex h-[250px] w-full items-center justify-center">
+          {/* 3D Orbiting Ring */}
+          <div
+            aria-hidden
+            className={
+              "pointer-events-none absolute h-[230px] w-[230px] rounded-full border border-dashed border-orange-400/35 " +
+              (!reduce && spinning ? "animate-orbit-ring" : "")
+            }
+            style={!reduce && !spinning ? { transform: "rotateX(72deg) rotateZ(24deg)" } : undefined}
+          />
+          <div
+            aria-hidden
+            className="pointer-events-none absolute h-[200px] w-[200px] rounded-full border border-teal-400/25"
+            style={{ transform: "rotateX(68deg) rotateY(28deg)" }}
+          />
+
+          {/* Interactive Pointer Tilt Wrapper */}
+          <motion.div
+            style={
+              reduce
+                ? { transformStyle: "preserve-3d" }
+                : {
+                    rotateX: springX,
+                    rotateY: springY,
+                    transformStyle: "preserve-3d",
+                  }
+            }
+            className="preserve-3d relative flex h-[168px] w-[168px] items-center justify-center"
+          >
+            {/* Continuous 3D Cube Spin */}
+            <div
+              className={
+                "preserve-3d relative h-[168px] w-[168px] " +
+                (!reduce && spinning ? "animate-cube-spin" : "")
+              }
+              style={
+                reduce || !spinning
+                  ? { transform: "rotateX(-18deg) rotateY(-32deg)" }
+                  : undefined
+              }
+            >
+              {/* Inner glowing checksum core visible when exploded */}
+              <div
+                className="preserve-3d absolute inset-10 flex flex-col items-center justify-center rounded-2xl border border-indigo-400/60 bg-indigo-600/30 text-center shadow-[0_0_32px_rgba(99,102,241,0.45)] backdrop-blur-sm"
+                style={{ transform: "translateZ(0px)" }}
+              >
+                <span className="font-mono text-[10px] font-semibold text-indigo-200">
+                  CORE SEAL
+                </span>
+                <span className="mt-0.5 font-mono text-xs font-bold text-white">
+                  9f2c…e41a
+                </span>
+              </div>
+
+              {/* 6 True 3D Cube Faces */}
+              {CUBE_FACES.map((face) => (
+                <div
+                  key={face.id}
+                  className={`absolute inset-0 flex flex-col justify-between rounded-2xl border bg-gradient-to-br p-3.5 backdrop-blur-md transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${face.accent} ${face.border}`}
+                  style={{
+                    transform: face.transform(faceDistance),
+                    backgroundColor: "var(--surface-card)",
+                    backfaceVisibility: "visible",
+                  }}
+                >
+                  <div className="flex items-center justify-between">
+                    <span className={`h-2 w-2 rounded-full ${face.dot}`} />
+                    <span className="font-mono text-[10px] uppercase tracking-wider text-frost-500">
+                      {face.id}
+                    </span>
+                  </div>
+                  <div>
+                    <p className="font-mono text-xs font-semibold text-frost-100">
+                      {face.label}
+                    </p>
+                    <p className="mt-0.5 text-[11px] text-frost-400">{face.sub}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        </div>
+
+        {/* Vivid 3-stage pipeline summary */}
         <div
-          className="space-y-2.5 border-t pt-4"
+          className="grid grid-cols-3 gap-2 border-t pt-4 text-center"
           style={{ borderColor: "var(--border-hairline)" }}
         >
-          <div className="flex items-center justify-between text-xs tabular-nums">
-            <span className="text-frost-500">Validation · 5 layers</span>
-            <span className="font-mono font-medium text-emerald-600 dark:text-emerald-400">
-              5/5 passed
-            </span>
+          <div className="rounded-xl border border-orange-500/25 bg-orange-500/10 px-2 py-2">
+            <p className="font-mono text-[10px] text-orange-600 dark:text-orange-300">
+              Source
+            </p>
+            <p className="text-xs font-semibold text-frost-100">Notion</p>
           </div>
-          <div className="flex items-center justify-between text-xs tabular-nums">
-            <span className="text-frost-500">Round-trip diff</span>
-            <span className="font-mono font-medium text-brand-600 dark:text-brand-400">
-              0 silent drops
-            </span>
+          <div className="rounded-xl border border-indigo-500/25 bg-indigo-500/10 px-2 py-2">
+            <p className="font-mono text-[10px] text-indigo-600 dark:text-indigo-300">
+              Package
+            </p>
+            <p className="text-xs font-semibold text-frost-100">.portad</p>
           </div>
-          <div
-            className="h-1.5 overflow-hidden rounded-full"
-            style={{ backgroundColor: "var(--surface-raised)" }}
-          >
-            <motion.div
-              className="h-full rounded-full bg-brand-600 dark:bg-brand-500"
-              initial={{ width: "68%" }}
-              animate={{ width: exploded ? "100%" : "68%" }}
-              transition={LAYER_TRANSITION}
-            />
+          <div className="rounded-xl border border-emerald-500/25 bg-emerald-500/10 px-2 py-2">
+            <p className="font-mono text-[10px] text-emerald-600 dark:text-emerald-300">
+              Target
+            </p>
+            <p className="text-xs font-semibold text-frost-100">Huly</p>
           </div>
         </div>
-      </motion.div>
+      </div>
     </div>
   );
 }

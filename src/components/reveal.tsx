@@ -31,7 +31,7 @@ export default function Reveal({
       !("IntersectionObserver" in window)
     ) {
       element.style.opacity = "1";
-      element.style.transform = "translateY(0)";
+      element.style.transform = "perspective(900px) translateY(0) rotateX(0deg)";
       return;
     }
 
@@ -50,7 +50,7 @@ export default function Reveal({
     const handleMotionChange = (event: MediaQueryListEvent) => {
       if (event.matches) {
         element.style.opacity = "1";
-        element.style.transform = "translateY(0)";
+        element.style.transform = "perspective(900px) translateY(0) rotateX(0deg)";
         element.style.transition = "none";
         observer.disconnect();
       }
@@ -70,8 +70,10 @@ export default function Reveal({
       className={className}
       style={{
         opacity: visible ? 1 : 0,
-        transform: visible ? "translateY(0)" : `translateY(${y}px)`,
-        transition: `opacity ${duration}s cubic-bezier(0.16, 1, 0.3, 1) ${delay}s, transform ${duration}s cubic-bezier(0.16, 1, 0.3, 1) ${delay}s`,
+        transform: visible
+          ? "perspective(900px) translateY(0) rotateX(0deg) scale(1)"
+          : `perspective(900px) translateY(${y}px) rotateX(8deg) scale(0.985)`,
+        transition: `opacity ${duration}s cubic-bezier(0.22, 1, 0.36, 1) ${delay}s, transform ${duration}s cubic-bezier(0.22, 1, 0.36, 1) ${delay}s`,
       }}
     >
       {children}

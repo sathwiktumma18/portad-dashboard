@@ -178,7 +178,9 @@ export default function Home() {
                 <h1 className="mt-4 text-4xl font-medium leading-[1.06] tracking-tight text-frost-100 sm:text-6xl lg:text-7xl">
                   Move your workspace.
                   <br />
-                  <span className="text-brand-600 dark:text-brand-400">Keep the truth.</span>
+                  <span className="bg-gradient-to-r from-orange-500 via-amber-500 to-teal-400 bg-clip-text text-transparent">
+                    Keep the truth.
+                  </span>
                 </h1>
               </Reveal>
 
@@ -253,10 +255,18 @@ export default function Home() {
           <div className="mt-14 grid gap-4 sm:grid-cols-2">
             {FEATURES.map((feature, i) => {
               const Icon = feature.icon;
+              const iconTones = [
+                "border-orange-500/30 bg-orange-500/12 text-orange-600 dark:text-orange-400",
+                "border-emerald-500/30 bg-emerald-500/12 text-emerald-600 dark:text-emerald-400",
+                "border-indigo-500/30 bg-indigo-500/12 text-indigo-600 dark:text-indigo-400",
+                "border-teal-500/30 bg-teal-500/12 text-teal-600 dark:text-teal-400",
+              ];
               return (
                 <Reveal key={feature.title} delay={i * 0.06}>
-                  <TiltCard className="glass group relative h-full rounded-2xl p-6 transition-colors hover:border-white/20">
-                    <span className="grid h-10 w-10 place-items-center rounded-xl border border-slate-200 bg-slate-50 text-brand-600 dark:border-white/10 dark:bg-white/[0.04] dark:text-brand-400">
+                  <TiltCard className="glass group relative h-full rounded-2xl p-6 transition-colors hover:border-orange-500/40">
+                    <span
+                      className={`grid h-10 w-10 place-items-center rounded-xl border ${iconTones[i % iconTones.length]}`}
+                    >
                       <Icon className="h-5 w-5" />
                     </span>
                     <h3 className="mt-5 text-lg font-medium text-slate-900 dark:text-frost-50">
@@ -283,25 +293,25 @@ export default function Home() {
             {CATEGORIES.map((category) => {
               const Icon = category.icon;
               return (
-                <div
+                <TiltCard
                   key={category.title}
-                  className="glass w-[260px] shrink-0 snap-start rounded-2xl p-5 sm:p-6 transition duration-300 hover:border-brand-400/40 sm:w-[320px]"
+                  className="glass w-[260px] shrink-0 snap-start rounded-2xl p-5 sm:p-6 transition-colors hover:border-orange-500/40 sm:w-[320px]"
                 >
-                  <span className="grid h-11 w-11 place-items-center rounded-xl border border-slate-200 bg-white text-brand-600 shadow-xs dark:border-white/10 dark:bg-white/[0.05] dark:text-brand-300 dark:shadow-none">
+                  <span className="grid h-11 w-11 place-items-center rounded-xl border border-orange-500/25 bg-orange-500/10 text-orange-600 dark:text-orange-400">
                     <Icon className="h-5 w-5" />
                   </span>
                   <h3 className="mt-5 font-semibold text-slate-900 dark:text-frost-50">{category.title}</h3>
                   <p className="mt-1.5 text-sm leading-6 text-slate-600 dark:text-frost-400">{category.body}</p>
                   <span
-                    className={`mt-4 inline-flex rounded-full border px-2.5 py-1 font-mono text-[11px] font-medium tracking-wider ${
+                    className={`mt-4 inline-flex rounded-full border px-2.5 py-1 font-mono text-[11px] font-medium ${
                       category.fidelity === "PRESERVED"
-                        ? "border-emerald-500/30 bg-emerald-50 text-emerald-700 dark:border-emerald-400/25 dark:bg-emerald-400/10 dark:text-emerald-300"
-                        : "border-blue-500/30 bg-blue-50 text-blue-700 dark:border-blue-400/25 dark:bg-blue-400/10 dark:text-blue-300"
+                        ? "border-emerald-500/35 bg-emerald-500/12 text-emerald-700 dark:text-emerald-300"
+                        : "border-indigo-500/35 bg-indigo-500/12 text-indigo-700 dark:text-indigo-300"
                     }`}
                   >
-                    {category.fidelity}
+                    {category.fidelity === "PRESERVED" ? "Preserved" : "Transformed"}
                   </span>
-                </div>
+                </TiltCard>
               );
             })}
           </Carousel>
