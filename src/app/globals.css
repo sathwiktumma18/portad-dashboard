@@ -250,24 +250,24 @@ body {
 
 @keyframes marquee-scroll {
   0% {
-    transform: translate3d(0, 0, 0);
+    transform: translate3d(-50%, 0, 0);
   }
   100% {
-    transform: translate3d(-50%, 0, 0);
+    transform: translate3d(0, 0, 0);
   }
 }
 
 @keyframes marquee-dance {
   0%, 100% {
-    transform: perspective(700px) translate3d(0, -4px, 10px) rotateX(6deg) rotateZ(-1deg);
+    transform: perspective(700px) translate3d(0, -6px, 12px) rotateX(8deg) rotateZ(-2deg);
   }
   50% {
-    transform: perspective(700px) translate3d(0, 4px, 0px) rotateX(-6deg) rotateZ(1deg);
+    transform: perspective(700px) translate3d(0, 6px, 0px) rotateX(-8deg) rotateZ(2deg);
   }
 }
 
 .marquee {
-  animation: marquee-scroll 28s linear infinite;
+  animation: marquee-scroll 26s linear infinite;
   will-change: transform;
 }
 
@@ -276,17 +276,8 @@ body {
 }
 
 .marquee-dance-pill {
-  animation: marquee-dance 3.6s ease-in-out infinite;
+  animation: marquee-dance 3.2s ease-in-out infinite;
   will-change: transform;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .animate-aurora-3d-one,
-  .animate-aurora-3d-two,
-  .marquee,
-  .marquee-dance-pill {
-    animation: none;
-  }
 }
 
 .light .glass:hover {

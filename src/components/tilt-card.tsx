@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
-import { motion, useMotionValue, useReducedMotion, useSpring } from "motion/react";
+import { motion, useMotionValue, useSpring } from "motion/react";
 
 const SPRING_CONFIG = { stiffness: 240, damping: 20, mass: 0.6 };
 
@@ -12,7 +12,7 @@ export default function TiltCard({
   children: ReactNode;
   className?: string;
 }) {
-  const reduce = useReducedMotion();
+  const reduce = false;
   const rotateX = useMotionValue(0);
   const rotateY = useMotionValue(0);
   const [spotlight, setSpotlight] = useState({ x: 50, y: 50, active: false });
