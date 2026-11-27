@@ -1,132 +1,200 @@
 "use client";
 
-import { motion, useReducedMotion } from "motion/react";
+import { useState } from "react";
+import { motion, useMotionValue, useReducedMotion, useSpring } from "motion/react";
 
-const NODES = [
+const ARCHIVE_LAYERS = [
   {
-    label: "Source",
-    name: "Notion",
-    meta: "1,284 records · 12 attachments",
-    glyph: "N",
-    tone: "from-brand-500/15 to-brand-500/5 text-brand-700 border-brand-200 dark:from-brand-500/25 dark:to-brand-500/5 dark:text-brand-300 dark:border-brand-400/30",
+    file: "checksums.txt",
+    role: "SHA-256 verification seal",
+    meta: "sha256:9f2c…e41a",
+    status: "Verified",
+    zOffset: 54,
+    accent: true,
   },
   {
-    label: "Package",
-    name: "notion.portad",
-    meta: "sha256:9f2c…e41a · 84.2 MB",
-    glyph: "◆",
-    tone: "from-slate-100 to-slate-50 text-slate-700 border-slate-200 dark:from-white/10 dark:to-white/[0.02] dark:text-frost-300 dark:border-white/15",
-    mono: true,
+    file: "entities/",
+    role: "Notion → Huly neutral records",
+    meta: "1,284 records",
+    status: "Mapped",
+    zOffset: 36,
+    accent: false,
   },
   {
-    label: "Target",
-    name: "Huly",
-    meta: "Unified Import Format",
-    glyph: "H",
-    tone: "from-cyan-500/15 to-cyan-500/5 text-cyan-800 border-cyan-200 dark:from-ice-400/25 dark:to-ice-400/5 dark:text-ice-400 dark:border-ice-400/30",
+    file: "attachments/",
+    role: "Path-contained binary assets",
+    meta: "12 files · 84.2 MB",
+    status: "Verified",
+    zOffset: 18,
+    accent: false,
+  },
+  {
+    file: "manifest.json",
+    role: "Spec 0.1 schema & checkpoint",
+    meta: "checkpoint 4/6",
+    status: "Resumable",
+    zOffset: 0,
+    accent: false,
   },
 ];
 
+const TILT_SPRING = { stiffness: 220, damping: 24, mass: 0.7 };
+const LAYER_TRANSITION = { duration: 0.42, ease: [0.22, 1, 0.36, 1] as const };
+
 export default function HeroVisual() {
   const reduce = useReducedMotion();
+  const [exploded, setExploded] = useState(true);
+
+  const rotateX = useMotionValue(reduce ? 0 : 7);
+  const rotateY = useMotionValue(reduce ? 0 : -9);
+  const springX = useSpring(rotateX, TILT_SPRING);
+  const springY = useSpring(rotateY, TILT_SPRING);
+
+  function handlePointerMove(e: React.PointerEvent<HTMLDivElement>) {
+    if (reduce) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    const px = (e.clientX - rect.left) / rect.width - 0.5;
+    const py = (e.clientY - rect.top) / rect.height - 0.5;
+    rotateX.set(7 - py * 12);
+    rotateY.set(-9 + px * 14);
+  }
+
+  function handlePointerLeave() {
+    rotateX.set(reduce ? 0 : 7);
+    rotateY.set(reduce ? 0 : -9);
+  }
 
   return (
-    <div className="glass-strong relative w-full max-w-[420px] overflow-hidden rounded-3xl p-6 shadow-[0_20px_50px_-15px_rgba(15,32,73,0.08)] dark:shadow-[0_50px_90px_-40px_rgba(0,0,0,0.85)]">
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -right-20 -top-24 h-56 w-56 rounded-full bg-brand-500/25 blur-3xl"
-      />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -bottom-24 -left-16 h-48 w-48 rounded-full bg-ice-400/15 blur-3xl"
-      />
+    <div
+      className="perspective-stage w-full max-w-[440px]"
+      onPointerMove={handlePointerMove}
+      onPointerLeave={handlePointerLeave}
+    >
+      <motion.div
+        style={
+          reduce
+            ? undefined
+            : {
+                rotateX: springX,
+                rotateY: springY,
+                transformStyle: "preserve-3d",
+              }
+        }
+        className="glass-strong hairline relative w-full rounded-2xl p-6"
+      >
+        {/* Top instrument header */}
+        <div
+          className="flex items-center justify-between gap-3 border-b pb-4"
+          style={{ borderColor: "var(--border-hairline)" }}
+        >
+          <div className="min-w-0">
+            <p className="font-mono text-xs text-frost-500">notion.portad · spec 0.1</p>
+            <p className="mt-0.5 text-sm font-medium text-frost-100">
+              Notion → Huly package
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => setExploded((prev) => !prev)}
+            className="shrink-0 rounded-lg border px-2.5 py-1.5 font-mono text-xs text-frost-300 transition-colors hover:text-frost-100"
+            style={{
+              borderColor: "var(--border-hairline-strong)",
+              backgroundColor: "var(--surface-raised)",
+            }}
+          >
+            {exploded ? "Collapse 3D" : "Inspect 3D layers"}
+          </button>
+        </div>
 
-      <div className="relative flex items-center justify-between">
-        <span className="font-mono text-xs text-frost-500">job · notion → huly</span>
-        <span className="flex items-center gap-1.5 rounded-full border border-emerald-500/25 bg-emerald-50 px-2.5 py-1 text-[11px] font-medium text-emerald-700 dark:border-emerald-400/30 dark:bg-emerald-400/10 dark:text-emerald-300">
-          <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse-dot dark:bg-emerald-400" />
-          live preview
-        </span>
-      </div>
-
-      <div className="relative mt-5 space-y-3">
-        {NODES.map((node, i) => (
-          <div key={node.label}>
-            <div className="glass flex items-center gap-3.5 rounded-2xl p-3.5 transition hover:border-brand-400/40">
-              <span
-                className={
-                  "grid h-10 w-10 shrink-0 place-items-center rounded-xl border bg-gradient-to-br text-sm font-semibold " +
-                  node.tone
-                }
-              >
-                {node.glyph}
-              </span>
-              <span className="min-w-0 flex-1">
-                <span className="block text-[11px] uppercase tracking-widest text-frost-600">
-                  {node.label}
-                </span>
+        {/* 3D Stacked Archive Layers */}
+        <div className="preserve-3d relative my-5 space-y-2.5">
+          {ARCHIVE_LAYERS.map((layer, index) => (
+            <motion.div
+              key={layer.file}
+              animate={
+                reduce
+                  ? undefined
+                  : {
+                      z: exploded ? layer.zOffset : 0,
+                      y: exploded ? index * -2 : 0,
+                      scale: exploded ? 1 + (3 - index) * 0.008 : 1,
+                    }
+              }
+              transition={LAYER_TRANSITION}
+              className="preserve-3d flex items-center justify-between gap-3 rounded-xl border px-3.5 py-3 transition-colors"
+              style={{
+                borderColor: layer.accent
+                  ? "rgba(59, 130, 246, 0.35)"
+                  : "var(--border-hairline)",
+                backgroundColor: layer.accent
+                  ? "rgba(37, 99, 235, 0.08)"
+                  : "var(--surface-raised)",
+              }}
+            >
+              <div className="min-w-0">
+                <div className="flex items-center gap-2">
+                  <span
+                    aria-hidden
+                    className={
+                      "h-1.5 w-1.5 rounded-full " +
+                      (layer.accent ? "bg-brand-500" : "bg-emerald-500")
+                    }
+                  />
+                  <span className="truncate font-mono text-xs font-medium text-frost-100">
+                    {layer.file}
+                  </span>
+                </div>
+                <p className="mt-0.5 truncate pl-3.5 text-xs text-frost-500">
+                  {layer.role}
+                </p>
+              </div>
+              <div className="shrink-0 text-right font-mono tabular-nums">
+                <span className="block text-xs text-frost-200">{layer.meta}</span>
                 <span
                   className={
-                    "block truncate text-sm font-medium text-frost-100 " +
-                    (node.mono ? "font-mono" : "")
+                    "block text-[11px] " +
+                    (layer.accent
+                      ? "text-brand-600 dark:text-brand-400"
+                      : "text-emerald-600 dark:text-emerald-400")
                   }
                 >
-                  {node.name}
+                  {layer.status}
                 </span>
-              </span>
-              <span className="hidden truncate text-right text-[11px] leading-4 text-frost-500 sm:block">
-                {node.meta}
-              </span>
-            </div>
-            {i < NODES.length - 1 && (
-              <div className="relative mx-auto h-6 w-px bg-gradient-to-b from-brand-400/50 to-ice-400/50">
-                {!reduce && (
-                  <motion.span
-                    aria-hidden
-                    className="absolute left-1/2 top-0 h-1.5 w-1.5 -translate-x-1/2 rounded-full bg-ice-400 shadow-[0_0_10px_2px_rgba(0,198,255,0.7)]"
-                    initial={{ y: -3, opacity: 0 }}
-                    animate={{ y: [-3, 21], opacity: [0, 1, 1, 0] }}
-                    transition={{
-                      duration: 1.9,
-                      repeat: Infinity,
-                      ease: "linear",
-                      delay: i * 0.45,
-                    }}
-                  />
-                )}
               </div>
-            )}
-          </div>
-        ))}
-      </div>
+            </motion.div>
+          ))}
+        </div>
 
-      <div className="relative mt-5 space-y-2.5 border-t border-slate-200/80 pt-4 dark:border-white/10">
-        {[
-          { label: "Export", done: true },
-          { label: "Validate · 5 layers", done: true },
-        ].map((row) => (
-          <div key={row.label} className="flex items-center justify-between text-xs">
-            <span className="text-frost-400">{row.label}</span>
-            <span className="font-medium text-emerald-600 dark:text-emerald-400">✓ done</span>
+        {/* Pipeline verification footer */}
+        <div
+          className="space-y-2.5 border-t pt-4"
+          style={{ borderColor: "var(--border-hairline)" }}
+        >
+          <div className="flex items-center justify-between text-xs tabular-nums">
+            <span className="text-frost-500">Validation · 5 layers</span>
+            <span className="font-mono font-medium text-emerald-600 dark:text-emerald-400">
+              5/5 passed
+            </span>
           </div>
-        ))}
-        <div className="flex items-center justify-between text-xs">
-          <span className="text-frost-400">Import · checkpoint 4/6</span>
-          <span className="font-medium text-brand-600 dark:text-brand-300">resumable</span>
+          <div className="flex items-center justify-between text-xs tabular-nums">
+            <span className="text-frost-500">Round-trip diff</span>
+            <span className="font-mono font-medium text-brand-600 dark:text-brand-400">
+              0 silent drops
+            </span>
+          </div>
+          <div
+            className="h-1.5 overflow-hidden rounded-full"
+            style={{ backgroundColor: "var(--surface-raised)" }}
+          >
+            <motion.div
+              className="h-full rounded-full bg-brand-600 dark:bg-brand-500"
+              initial={{ width: "68%" }}
+              animate={{ width: exploded ? "100%" : "68%" }}
+              transition={LAYER_TRANSITION}
+            />
+          </div>
         </div>
-        <div className="h-1.5 overflow-hidden rounded-full bg-slate-200/80 dark:bg-white/8">
-          <motion.div
-            className="h-full rounded-full bg-gradient-to-r from-brand-500 to-ice-400"
-            initial={{ width: "34%" }}
-            animate={reduce ? { width: "72%" } : { width: ["34%", "72%", "34%"] }}
-            transition={
-              reduce
-                ? undefined
-                : { duration: 5.5, repeat: Infinity, ease: "easeInOut", repeatType: "reverse" }
-            }
-          />
-        </div>
-      </div>
+      </motion.div>
     </div>
   );
 }

@@ -26,10 +26,6 @@ const COLUMNS: { title: string; links: { label: string; href: string }[] }[] = [
 export default function SiteFooter() {
   return (
     <footer className="relative border-t border-slate-200 bg-white dark:border-white/8 dark:bg-space-950">
-      <div
-        aria-hidden
-        className="absolute inset-x-0 -top-px h-px bg-gradient-to-r from-transparent via-brand-400/50 to-transparent"
-      />
       <div className="mx-auto grid w-full max-w-6xl grid-cols-1 gap-10 px-4 py-14 sm:grid-cols-2 sm:px-6 md:grid-cols-[1.4fr_1fr_1fr]">
         <div className="sm:col-span-2 md:col-span-1">
           <div className="flex items-center gap-2.5">
@@ -47,7 +43,7 @@ export default function SiteFooter() {
 
         {COLUMNS.map((column) => (
           <nav key={column.title} aria-label={column.title}>
-            <h3 className="text-xs font-semibold uppercase tracking-[0.2em] text-frost-300">
+            <h3 className="text-xs font-medium text-frost-300">
               {column.title}
             </h3>
             <ul className="mt-4 space-y-2.5 text-sm">

@@ -39,7 +39,7 @@ export default function SiteHeader() {
   }, [mobileOpen]);
 
   return (
-    <header className="sticky top-0 z-40 border-b border-slate-200/80 bg-white/80 backdrop-blur-xl transition-colors duration-200 dark:border-white/8 dark:bg-space-900/75">
+    <header className="sticky top-0 z-40 border-b border-slate-200/80 bg-white/95 backdrop-blur-md transition-colors duration-200 dark:border-white/8 dark:bg-space-900/95">
       <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
         <Link
           href="/"
@@ -105,7 +105,7 @@ export default function SiteHeader() {
           ) : (
             <Link
               href="/account"
-              className="btn-gradient rounded-full px-4 py-1.5 text-xs font-semibold text-white shadow-sm transition-all"
+              className="btn-primary rounded-lg px-4 py-1.5 text-xs font-medium"
             >
               Sign in
             </Link>
