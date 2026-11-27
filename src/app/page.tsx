@@ -160,47 +160,53 @@ function Cell({ value }: { value: boolean | "partial" }) {
 
 export default function Home() {
   return (
-    <>
+    <div className="relative overflow-x-clip">
+      {/* ── Global Slow-Motion 3D Aurora / Ribbon Canvas across entire page ── */}
+      <div
+        aria-hidden
+        className="pointer-events-none fixed inset-0 -z-10 overflow-hidden bg-gradient-to-br from-[#f6f3ff] via-[#f4f7fc] to-[#ecfeff] dark:from-[#060607] dark:via-[#070709] dark:to-[#060607]"
+      >
+        <div
+          className="animate-aurora-3d-one absolute -left-1/4 -top-1/4 h-[85vh] w-[140vw] rounded-[100%] opacity-50 blur-[80px] dark:opacity-80"
+          style={{
+            background:
+              "conic-gradient(from 210deg at 45% 55%, rgba(6,6,7,0) 0deg, rgba(168,85,247,0.45) 55deg, rgba(236,72,153,0.5) 115deg, rgba(8,207,254,0.45) 170deg, rgba(6,6,7,0) 240deg)",
+          }}
+        />
+        <div
+          className="animate-aurora-3d-two absolute -bottom-1/3 -right-1/4 h-[80vh] w-[120vw] rounded-[100%] opacity-35 blur-[90px] dark:opacity-55"
+          style={{
+            background:
+              "radial-gradient(ellipse at 60% 50%, rgba(8,207,254,0.38), rgba(168,85,247,0.28) 45%, transparent 72%)",
+          }}
+        />
+        <div className="grid-bg absolute inset-0 opacity-60" />
+      </div>
+
       {/* ── Hero ─────────────────────────────────────────────── */}
-      <div className="relative overflow-hidden border-b border-slate-200 bg-gradient-to-br from-[#f6f4ff] via-[#f8fafc] to-[#ecfeff] text-slate-900 dark:border-white/10 dark:from-[#060607] dark:via-[#060607] dark:to-[#060607] dark:text-white">
-        {/* Sweeping Violet, Magenta & Cyan Light Ribbon */}
-        <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
-          <div
-            className="animate-ribbon absolute -left-1/4 -top-1/3 h-[680px] w-[140%] rounded-[100%] opacity-45 blur-[70px] dark:opacity-80"
-            style={{
-              background:
-                "conic-gradient(from 210deg at 45% 55%, rgba(6,6,7,0) 0deg, rgba(168,85,247,0.45) 55deg, rgba(236,72,153,0.55) 115deg, rgba(8,207,254,0.48) 170deg, rgba(6,6,7,0) 240deg)",
-              transform: "rotate(-12deg)",
-            }}
+      <div className="relative border-b border-slate-200/70 text-slate-900 dark:border-white/10 dark:text-white">
+        {/* Crisp sweeping ribbon line */}
+        <svg
+          aria-hidden
+          viewBox="0 0 1440 700"
+          className="pointer-events-none absolute inset-0 h-full w-full opacity-45 dark:opacity-60"
+          preserveAspectRatio="none"
+        >
+          <defs>
+            <linearGradient id="portadRibbon" x1="0%" y1="80%" x2="100%" y2="10%">
+              <stop offset="0%" stopColor="#7c3aed" stopOpacity="0" />
+              <stop offset="35%" stopColor="#a855f7" stopOpacity="0.6" />
+              <stop offset="65%" stopColor="#ec4899" stopOpacity="0.55" />
+              <stop offset="100%" stopColor="#08CFFE" stopOpacity="0.7" />
+            </linearGradient>
+          </defs>
+          <path
+            d="M -60 580 C 340 440, 720 250, 1500 50"
+            stroke="url(#portadRibbon)"
+            strokeWidth="2.5"
+            fill="none"
           />
-          <svg
-            viewBox="0 0 1440 700"
-            className="absolute inset-0 h-full w-full opacity-45 dark:opacity-55"
-            preserveAspectRatio="none"
-          >
-            <defs>
-              <linearGradient id="portadRibbon" x1="0%" y1="80%" x2="100%" y2="10%">
-                <stop offset="0%" stopColor="#7c3aed" stopOpacity="0" />
-                <stop offset="35%" stopColor="#a855f7" stopOpacity="0.6" />
-                <stop offset="65%" stopColor="#ec4899" stopOpacity="0.55" />
-                <stop offset="100%" stopColor="#08CFFE" stopOpacity="0.7" />
-              </linearGradient>
-            </defs>
-            <path
-              d="M -80 620 C 320 480, 680 280, 1520 70"
-              stroke="url(#portadRibbon)"
-              strokeWidth="48"
-              fill="none"
-              style={{ filter: "blur(24px)" }}
-            />
-            <path
-              d="M -60 580 C 340 440, 720 250, 1500 50"
-              stroke="url(#portadRibbon)"
-              strokeWidth="3"
-              fill="none"
-            />
-          </svg>
-        </div>
+        </svg>
 
         <Section className="relative py-20 sm:py-28">
           <div className="grid items-center gap-12 lg:grid-cols-[1.1fr_1fr]">
@@ -216,7 +222,7 @@ export default function Home() {
               </Reveal>
 
               <Reveal delay={0.18} y={16}>
-                <p className="mt-6 max-w-xl text-base leading-7 text-slate-600 sm:text-lg dark:text-[#D6D7E6]">
+                <p className="mt-6 max-w-xl text-base leading-7 text-slate-700 sm:text-lg dark:text-[#D6D7E6]">
                   Export any SaaS workspace into a checksummed .portad package,
                   verify every field against your rules, and import into the target
                   system with round-trip proof.
@@ -227,7 +233,7 @@ export default function Home() {
                 <div className="mt-8 flex flex-wrap items-center gap-3.5">
                   <Link
                     href="/migrate"
-                    className="group inline-flex items-center gap-2.5 rounded-full bg-slate-950 py-2.5 pl-5 pr-2.5 text-sm font-semibold text-white shadow-[0_10px_28px_-10px_rgba(15,23,42,0.4)] transition-all hover:-translate-y-0.5 hover:bg-slate-800 dark:bg-white dark:text-[#060607] dark:shadow-[0_10px_30px_-10px_rgba(255,255,255,0.45)] dark:hover:bg-slate-100"
+                    className="btn-primary group inline-flex items-center gap-2.5 rounded-full py-2.5 pl-5 pr-2.5 text-sm font-semibold"
                   >
                     <span>Start a migration</span>
                     <span className="grid h-7 w-7 place-items-center rounded-full bg-[#08CFFE] text-slate-950 transition-transform duration-300 group-hover:rotate-45 dark:bg-[#060607] dark:text-white">
@@ -236,7 +242,7 @@ export default function Home() {
                   </Link>
                   <Link
                     href="/compatibility"
-                    className="inline-flex items-center gap-2 rounded-full border border-slate-400/70 bg-white/80 px-6 py-3 text-sm font-medium text-slate-900 shadow-xs transition-colors hover:border-slate-600 hover:bg-white dark:border-white/25 dark:bg-white/5 dark:text-white dark:hover:border-white/50 dark:hover:bg-white/10"
+                    className="btn-glass inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-medium"
                   >
                     See what moves
                   </Link>
@@ -262,7 +268,7 @@ export default function Home() {
       </div>
 
       {/* ── Marquee ─────────────────────────────────────────── */}
-      <div className="border-b border-white/8 bg-space-950/60 py-10">
+      <div className="border-b border-slate-200/70 bg-white/40 py-10 backdrop-blur-md dark:border-white/8 dark:bg-white/[0.02]">
         <p className="mb-6 text-center text-xs font-medium text-frost-400">
           Adapters built for the tools you already use
         </p>
@@ -282,7 +288,7 @@ export default function Home() {
       </Section>
 
       {/* ── Features ────────────────────────────────────────── */}
-      <div className="border-y border-slate-200/80 bg-slate-50/70 dark:border-white/8 dark:bg-space-950/60">
+      <div className="border-y border-slate-200/70 bg-white/35 backdrop-blur-md dark:border-white/8 dark:bg-white/[0.02]">
         <Section id="features">
           <SectionHeading
             eyebrow="Principles"
@@ -356,7 +362,7 @@ export default function Home() {
       </Section>
 
       {/* ── CLI + terminal ──────────────────────────────────── */}
-      <div className="border-y border-slate-200/80 bg-slate-50/70 dark:border-white/8 dark:bg-space-950/60">
+      <div className="border-y border-slate-200/70 bg-white/35 backdrop-blur-md dark:border-white/8 dark:bg-white/[0.02]">
         <Section id="cli">
           <div className="grid items-center gap-12 lg:grid-cols-2">
             <Reveal>
@@ -529,14 +535,14 @@ export default function Home() {
               <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
                 <Link
                   href="/migrate"
-                  className="btn-primary group inline-flex items-center gap-2 rounded-lg px-6 py-3 text-sm font-medium"
+                  className="btn-primary group inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-medium"
                 >
                   Start a migration
                   <IconArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
                 </Link>
                 <Link
                   href="/jobs"
-                  className="inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-6 py-3 text-sm font-medium text-slate-700 transition-colors hover:border-slate-400 hover:bg-slate-50 hover:text-slate-900 dark:border-white/15 dark:bg-transparent dark:text-frost-200 dark:hover:border-white/30 dark:hover:text-white"
+                  className="btn-glass inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-medium"
                 >
                   View jobs
                 </Link>
@@ -545,6 +551,6 @@ export default function Home() {
           </div>
         </Reveal>
       </Section>
-    </>
+    </div>
   );
 }

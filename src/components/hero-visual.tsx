@@ -4,18 +4,18 @@ import { useState } from "react";
 import { motion, useMotionValue, useReducedMotion, useSpring } from "motion/react";
 
 const INPUTS = [
-  { id: "pages", label: "Pages", meta: "1,284", y: 24 },
-  { id: "dbs", label: "Databases", meta: "48", y: 78 },
-  { id: "files", label: "Attachments", meta: "84 MB", y: 132 },
+  { id: "pages", label: "Pages", meta: "1,284", y: 24, delay: 0.08 },
+  { id: "dbs", label: "Databases", meta: "48", y: 78, delay: 0.45 },
+  { id: "files", label: "Attachments", meta: "84 MB", y: 132, delay: 0.82 },
 ];
 
 const OUTPUTS = [
-  { id: "preserved", label: "✓ Preserved", delay: 0.85, y: 24 },
-  { id: "checksummed", label: "✓ Checksummed", delay: 1.0, y: 78 },
-  { id: "ready", label: "✓ Huly Ready", delay: 1.15, y: 132 },
+  { id: "preserved", label: "✓ Preserved", y: 24, delay: 0.55 },
+  { id: "checksummed", label: "✓ Checksummed", y: 78, delay: 0.92 },
+  { id: "ready", label: "✓ Huly Ready", y: 132, delay: 1.28 },
 ];
 
-const TILT_SPRING = { stiffness: 220, damping: 24, mass: 0.7 };
+const TILT_SPRING = { stiffness: 200, damping: 22, mass: 0.7 };
 const EASE = [0.22, 1, 0.36, 1] as const;
 
 export default function HeroVisual() {
@@ -32,8 +32,8 @@ export default function HeroVisual() {
     const rect = e.currentTarget.getBoundingClientRect();
     const px = (e.clientX - rect.left) / rect.width - 0.5;
     const py = (e.clientY - rect.top) / rect.height - 0.5;
-    rotateX.set(-py * 8);
-    rotateY.set(px * 10);
+    rotateX.set(-py * 12);
+    rotateY.set(px * 14);
   }
 
   function handlePointerLeave() {
@@ -43,15 +43,26 @@ export default function HeroVisual() {
 
   return (
     <div
-      className="perspective-stage w-full max-w-[500px]"
+      className="perspective-stage w-full max-w-[520px]"
       onPointerMove={handlePointerMove}
       onPointerLeave={handlePointerLeave}
     >
+      {/* Gentle continuous 3D floating + pointer-steered tilt */}
       <motion.div
-        key={runKey}
-        initial={reduce ? false : { opacity: 0, y: 16, rotateX: 6 }}
-        animate={{ opacity: 1, y: 0, rotateX: 0 }}
-        transition={{ duration: 0.65, ease: EASE }}
+        animate={
+          reduce
+            ? undefined
+            : {
+                rotateX: [2, -2, 2],
+                rotateY: [-3, 3, -3],
+                y: [0, -6, 0],
+              }
+        }
+        transition={{
+          duration: 8,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
         style={
           reduce
             ? undefined
@@ -61,115 +72,182 @@ export default function HeroVisual() {
                 transformStyle: "preserve-3d",
               }
         }
-        className="relative overflow-hidden rounded-3xl border border-white/15 bg-[#121318]/95 p-6 text-white shadow-[0_28px_80px_-24px_rgba(15,23,42,0.45)] backdrop-blur-xl dark:shadow-[0_30px_90px_-30px_rgba(8,207,254,0.28)]"
+        className="preserve-3d relative overflow-hidden rounded-3xl border border-white/20 bg-[#101116]/90 p-6 text-white shadow-[0_32px_90px_-24px_rgba(15,23,42,0.55)] backdrop-blur-2xl dark:shadow-[0_32px_90px_-24px_rgba(8,207,254,0.3)]"
       >
-        {/* Ambient violet/cyan corner highlights */}
+        {/* Ambient moving violet/cyan inner glow */}
         <div
           aria-hidden
-          className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-fuchsia-500/20 blur-3xl"
+          className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-fuchsia-500/25 blur-3xl"
         />
         <div
           aria-hidden
-          className="pointer-events-none absolute -bottom-16 -left-16 h-48 w-48 rounded-full bg-[#08CFFE]/20 blur-3xl"
+          className="pointer-events-none absolute -bottom-16 -left-16 h-48 w-48 rounded-full bg-[#08CFFE]/25 blur-3xl"
         />
 
         {/* Card header */}
-        <div className="relative flex items-center justify-between gap-2 pb-4">
+        <div className="relative flex items-center justify-between gap-2 pb-5">
           <div className="flex items-center gap-2">
-            <span className="h-2 w-2 rounded-full bg-[#08CFFE] shadow-[0_0_10px_#08CFFE]" />
+            <span className="h-2 w-2 rounded-full bg-[#08CFFE] shadow-[0_0_12px_#08CFFE]" />
             <span className="font-mono text-xs text-[#D6D7E6]">
-              portad · verification hub
+              portad · 3D verification flow
             </span>
           </div>
           <button
             type="button"
             onClick={() => setRunKey((k) => k + 1)}
-            className="rounded-full border border-white/25 bg-white/10 px-3 py-1 font-mono text-[11px] font-medium text-white transition hover:border-[#08CFFE] hover:bg-white/20"
+            className="rounded-full border border-white/25 bg-white/10 px-3 py-1 font-mono text-[11px] font-medium text-white backdrop-blur-md transition hover:border-[#08CFFE] hover:bg-white/20 active:scale-95"
           >
             Replay flow ↻
           </button>
         </div>
 
-        {/* Flow stage: Inputs -> Hub -> Cyan Verified Outputs */}
-        <div className="relative my-3 grid grid-cols-[1fr_auto_1fr] items-center gap-2 sm:gap-3">
-          {/* Left: 3 Source Input Pills */}
-          <div className="relative z-10 flex flex-col gap-3">
-            {INPUTS.map((item, i) => (
+        {/* Keyed animation container so Replay restarts the entire wave from scratch */}
+        <div
+          key={runKey}
+          className="preserve-3d relative my-2 grid grid-cols-[1fr_76px_1fr] items-center gap-0 sm:grid-cols-[1fr_88px_1fr]"
+        >
+          {/* Left: 3 Input Pills (solid dark glass so lines connect cleanly to edge) */}
+          <div
+            className="preserve-3d relative z-20 flex flex-col gap-3"
+            style={reduce ? undefined : { transform: "translateZ(16px)" }}
+          >
+            {INPUTS.map((item) => (
               <motion.div
                 key={item.id}
-                initial={reduce ? false : { opacity: 0, x: -12 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.4, delay: 0.15 + i * 0.1, ease: EASE }}
-                className="group flex items-center justify-between gap-2 rounded-full border border-white/15 bg-[#2a2c32]/85 px-3 py-2 text-xs text-[#E4E6F0] transition-all hover:border-white/35 hover:bg-[#3a3d45] hover:text-white"
+                initial={
+                  reduce
+                    ? false
+                    : {
+                        opacity: 0.3,
+                        x: -14,
+                        scale: 0.94,
+                        borderColor: "rgba(255,255,255,0.12)",
+                      }
+                }
+                animate={{
+                  opacity: 1,
+                  x: 0,
+                  scale: 1,
+                  borderColor: [
+                    "rgba(255,255,255,0.15)",
+                    "rgba(232,121,249,0.85)",
+                    "rgba(255,255,255,0.22)",
+                  ],
+                }}
+                transition={{
+                  duration: 0.65,
+                  delay: item.delay,
+                  ease: EASE,
+                }}
+                className="flex h-[36px] items-center justify-between gap-2 rounded-full border border-white/20 bg-[#22242a] px-3.5 text-xs text-[#F1F2F7] shadow-md transition-colors hover:border-fuchsia-400/70 hover:bg-[#2d3038]"
               >
                 <span className="truncate font-medium">{item.label}</span>
-                <span className="hidden font-mono text-[10px] text-white/65 sm:inline">
+                <span className="hidden font-mono text-[10px] text-white/60 sm:inline">
                   {item.meta}
                 </span>
               </motion.div>
             ))}
           </div>
 
-          {/* Center: Animated SVG Connectors + Flowing Packets + White Shield Hub */}
-          <div className="relative flex flex-col items-center justify-center px-1 sm:px-2">
+          {/* Center: Clean SVG Connectors + Wave Light Beams + Popped-Out 3D Shield Hub */}
+          <div className="preserve-3d relative flex h-[156px] items-center justify-center">
             <svg
               aria-hidden
-              viewBox="0 0 180 156"
-              className="pointer-events-none absolute -left-[52px] -right-[52px] top-1/2 h-[156px] w-[180px] -translate-y-1/2 overflow-visible sm:-left-[64px] sm:-right-[64px] sm:w-[208px]"
+              viewBox="0 0 100 156"
+              className="pointer-events-none absolute inset-0 h-full w-full overflow-visible"
               fill="none"
             >
-              {/* 3 Input lines joining center + continuous flowing light dots */}
-              {INPUTS.map((item, idx) => {
-                const pathD = `M 4 ${item.y} C 45 ${item.y}, 55 78, 86 78`;
+              {/* Left -> Center Input Curves */}
+              {INPUTS.map((item) => {
+                const pathD = `M -4 ${item.y} C 24 ${item.y}, 30 78, 50 78`;
                 return (
                   <g key={`in-${item.id}`}>
+                    {/* Base subtle track */}
+                    <path
+                      d={pathD}
+                      stroke="rgba(255,255,255,0.16)"
+                      strokeWidth="1.5"
+                    />
+                    {/* Initial draw-in wave */}
                     <motion.path
                       d={pathD}
-                      stroke="rgba(255,255,255,0.45)"
-                      strokeWidth="1.5"
+                      stroke="#E879F9"
+                      strokeWidth="2"
                       strokeLinecap="round"
                       initial={reduce ? false : { pathLength: 0, opacity: 0.2 }}
-                      animate={{ pathLength: 1, opacity: 1 }}
-                      transition={{ duration: 0.55, delay: 0.3 + idx * 0.08, ease: EASE }}
+                      animate={{ pathLength: 1, opacity: [0.3, 1, 0.45] }}
+                      transition={{
+                        duration: 0.5,
+                        delay: item.delay + 0.12,
+                        ease: EASE,
+                      }}
                     />
+                    {/* Continuous flowing light pulse wave */}
                     {!reduce && (
-                      <circle r="2.6" fill="#E879F9">
-                        <animateMotion
-                          dur="2.2s"
-                          begin={`${idx * 0.45}s`}
-                          repeatCount="indefinite"
-                          path={pathD}
-                        />
-                      </circle>
+                      <motion.path
+                        d={pathD}
+                        stroke="#F0ABFC"
+                        strokeWidth="2.5"
+                        strokeLinecap="round"
+                        strokeDasharray="14 90"
+                        initial={{ strokeDashoffset: 104 }}
+                        animate={{ strokeDashoffset: [104, 0] }}
+                        transition={{
+                          duration: 1.8,
+                          delay: item.delay + 0.6,
+                          repeat: Infinity,
+                          repeatDelay: 0.8,
+                          ease: "linear",
+                        }}
+                      />
                     )}
                   </g>
                 );
               })}
 
-              {/* 3 Output lines fanning to Cyan pills + continuous flowing cyan dots */}
-              {OUTPUTS.map((out, idx) => {
-                const pathD = `M 94 78 C 125 78, 135 ${out.y}, 176 ${out.y}`;
+              {/* Center -> Right Output Curves */}
+              {OUTPUTS.map((out) => {
+                const pathD = `M 50 78 C 70 78, 76 ${out.y}, 104 ${out.y}`;
                 return (
                   <g key={`out-${out.id}`}>
+                    {/* Base subtle track */}
+                    <path
+                      d={pathD}
+                      stroke="rgba(8,207,254,0.2)"
+                      strokeWidth="1.5"
+                    />
+                    {/* Initial draw-in wave */}
                     <motion.path
                       d={pathD}
                       stroke="#08CFFE"
-                      strokeOpacity="0.7"
-                      strokeWidth="1.5"
+                      strokeWidth="2"
                       strokeLinecap="round"
                       initial={reduce ? false : { pathLength: 0, opacity: 0.2 }}
-                      animate={{ pathLength: 1, opacity: 1 }}
-                      transition={{ duration: 0.55, delay: 0.65 + idx * 0.1, ease: EASE }}
+                      animate={{ pathLength: 1, opacity: [0.3, 1, 0.7] }}
+                      transition={{
+                        duration: 0.5,
+                        delay: out.delay - 0.22,
+                        ease: EASE,
+                      }}
                     />
+                    {/* Continuous flowing cyan light pulse wave */}
                     {!reduce && (
-                      <circle r="2.8" fill="#08CFFE">
-                        <animateMotion
-                          dur="2.2s"
-                          begin={`${0.9 + idx * 0.45}s`}
-                          repeatCount="indefinite"
-                          path={pathD}
-                        />
-                      </circle>
+                      <motion.path
+                        d={pathD}
+                        stroke="#7EE8FF"
+                        strokeWidth="2.5"
+                        strokeLinecap="round"
+                        strokeDasharray="14 90"
+                        initial={{ strokeDashoffset: 104 }}
+                        animate={{ strokeDashoffset: [104, 0] }}
+                        transition={{
+                          duration: 1.8,
+                          delay: out.delay + 0.3,
+                          repeat: Infinity,
+                          repeatDelay: 0.8,
+                          ease: "linear",
+                        }}
+                      />
                     )}
                   </g>
                 );
@@ -177,32 +255,41 @@ export default function HeroVisual() {
 
               {/* Vertical Stem from Hub */}
               <motion.line
-                x1="90"
+                x1="50"
                 y1="96"
-                x2="90"
-                y2="178"
-                stroke="rgba(255,255,255,0.3)"
+                x2="50"
+                y2="176"
+                stroke="rgba(255,255,255,0.28)"
                 strokeWidth="1.25"
                 initial={reduce ? false : { pathLength: 0 }}
                 animate={{ pathLength: 1 }}
-                transition={{ duration: 0.5, delay: 0.95, ease: EASE }}
+                transition={{ duration: 0.5, delay: 0.75, ease: EASE }}
               />
             </svg>
 
-            {/* White Rounded Shield Hub Tile */}
+            {/* Popped-out 3D White Shield Hub Tile */}
             <motion.div
-              initial={reduce ? false : { scale: 0.65, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ duration: 0.45, delay: 0.55, ease: EASE }}
-              whileHover={reduce ? undefined : { scale: 1.08 }}
-              className="relative z-20 grid h-14 w-14 place-items-center rounded-2xl bg-white text-[#060607] shadow-[0_0_28px_rgba(255,255,255,0.35)] transition-shadow hover:shadow-[0_0_38px_rgba(8,207,254,0.8)]"
+              initial={reduce ? false : { scale: 0.6, opacity: 0 }}
+              animate={{
+                scale: [0.6, 1.12, 1],
+                opacity: 1,
+                boxShadow: [
+                  "0 0 18px rgba(255,255,255,0.25)",
+                  "0 0 38px rgba(8,207,254,0.85)",
+                  "0 0 24px rgba(8,207,254,0.4)",
+                ],
+              }}
+              transition={{ duration: 0.75, delay: 0.35, ease: EASE }}
+              whileHover={reduce ? undefined : { scale: 1.12 }}
+              style={reduce ? undefined : { transform: "translateZ(28px)" }}
+              className="relative z-30 grid h-12 w-12 place-items-center rounded-2xl bg-white text-[#060607]"
             >
               <svg
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
                 strokeWidth={2.2}
-                className="h-6 w-6"
+                className="h-5 w-5"
               >
                 <path
                   d="M12 3l7 3v5c0 4.5-3 8.2-7 10-4-1.8-7-5.5-7-10V6l7-3z"
@@ -218,23 +305,36 @@ export default function HeroVisual() {
             </motion.div>
           </div>
 
-          {/* Right: 3 Cyan Verified Output Pills */}
-          <div className="relative z-10 flex flex-col gap-3">
+          {/* Right: 3 Cyan Verified Output Pills lighting up in wave sequence */}
+          <div
+            className="preserve-3d relative z-20 flex flex-col gap-3"
+            style={reduce ? undefined : { transform: "translateZ(16px)" }}
+          >
             {OUTPUTS.map((out) => (
               <motion.div
                 key={out.id}
                 initial={
                   reduce
                     ? false
-                    : { opacity: 0.35, scale: 0.94, borderColor: "rgba(255,255,255,0.15)" }
+                    : {
+                        opacity: 0.25,
+                        x: 10,
+                        scale: 0.92,
+                        borderColor: "rgba(255,255,255,0.12)",
+                      }
                 }
                 animate={{
                   opacity: 1,
-                  scale: 1,
-                  borderColor: "rgba(8,207,254,0.7)",
+                  x: 0,
+                  scale: [0.92, 1.04, 1],
+                  borderColor: "rgba(8,207,254,0.75)",
                 }}
-                transition={{ duration: 0.45, delay: out.delay, ease: EASE }}
-                className="flex items-center justify-center rounded-full border border-[#08CFFE]/65 bg-[#0c3c52]/75 px-3 py-2 text-xs font-medium text-[#7ee8ff] shadow-[0_0_18px_-6px_rgba(8,207,254,0.55)] transition-all hover:bg-[#0e4e6b] hover:text-white"
+                transition={{
+                  duration: 0.55,
+                  delay: out.delay,
+                  ease: EASE,
+                }}
+                className="flex h-[36px] items-center justify-center rounded-full border border-[#08CFFE]/70 bg-[#0d3548] px-3 text-xs font-medium text-[#7ee8ff] shadow-[0_0_20px_-6px_rgba(8,207,254,0.6)] transition-all hover:bg-[#104761] hover:text-white"
               >
                 {out.label}
               </motion.div>
