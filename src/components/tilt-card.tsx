@@ -41,7 +41,10 @@ export default function TiltCard({
   }
 
   return (
-    <div className="perspective-stage">
+    <div
+      data-reduced-motion={reduce ? "true" : "false"}
+      className="perspective-stage"
+    >
       <motion.div
         onPointerMove={handlePointerMove}
         onPointerLeave={handlePointerLeave}

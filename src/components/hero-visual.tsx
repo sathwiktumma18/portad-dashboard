@@ -43,6 +43,7 @@ export default function HeroVisual() {
 
   return (
     <div
+      data-reduced-motion={reduce ? "true" : "false"}
       className="perspective-stage w-full max-w-[540px]"
       onPointerMove={handlePointerMove}
       onPointerLeave={handlePointerLeave}

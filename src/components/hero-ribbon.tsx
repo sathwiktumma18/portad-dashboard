@@ -14,6 +14,7 @@ export default function HeroRibbon() {
   return (
     <div
       aria-hidden
+      data-reduced-motion={reduce ? "true" : "false"}
       className="perspective-stage pointer-events-none absolute inset-0 overflow-hidden"
     >
       <motion.svg
