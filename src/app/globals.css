@@ -22,90 +22,94 @@
 }
 
 @theme {
-  --color-navy-600: #312e81;
-  --color-brand-700: #c2410c;
-  --color-brand-600: #ea580c;
-  --color-brand-500: #f97316;
-  --color-brand-400: #fb923c;
-  --color-brand-300: #fdba74;
-  --color-ice-500: #0d9488;
-  --color-ice-400: #2dd4bf;
+  --color-navy-600: #1e1b4b;
+  --color-brand-700: #0284c7;
+  --color-brand-600: #0ea5e9;
+  --color-brand-500: #08cffe;
+  --color-brand-400: #38bdf8;
+  --color-brand-300: #7dd3fc;
+  --color-ice-500: #a855f7;
+  --color-ice-400: #e879f9;
 }
 
 :root,
 .dark {
   color-scheme: dark;
-  --background: #0b0910;
-  --foreground: #f4f1f8;
-  --space-950: #07050b;
-  --space-900: #0b0910;
-  --space-850: #13101a;
-  --space-800: #1b1726;
-  --space-700: #282238;
+  --background: #060607;
+  --foreground: #f8f9fc;
+  --space-950: #040405;
+  --space-900: #060607;
+  --space-850: #111214;
+  --space-800: #18191a;
+  --space-700: #26282b;
   --frost-50: #ffffff;
-  --frost-100: #f4f1f8;
-  --frost-200: #dfd9ea;
-  --frost-300: #b8b0c8;
-  --frost-400: #9f96b2;
-  --frost-500: #7d7392;
-  --frost-600: #5d5470;
+  --frost-100: #f4f5f8;
+  --frost-200: #d6d7e6;
+  --frost-300: #b4b6c9;
+  --frost-400: #9a9db4;
+  --frost-500: #74778d;
+  --frost-600: #55586c;
 
-  --surface-card: #13101a;
-  --surface-raised: #1c1727;
-  --border-hairline: rgba(244, 241, 248, 0.09);
-  --border-hairline-strong: rgba(251, 146, 60, 0.28);
+  --surface-card: rgba(24, 25, 26, 0.82);
+  --surface-raised: rgba(59, 61, 65, 0.42);
+  --border-hairline: rgba(255, 255, 255, 0.1);
+  --border-hairline-strong: rgba(255, 255, 255, 0.18);
 
-  --grid-color: rgba(251, 146, 60, 0.05);
-  --hairline-color: rgba(244, 241, 248, 0.08);
+  --grid-color: rgba(255, 255, 255, 0.035);
+  --hairline-color: rgba(255, 255, 255, 0.08);
 }
 
 .light {
   color-scheme: light;
-  --background: #fcfaf7;
-  --foreground: #19141d;
+  --background: #f8fafc;
+  --foreground: #090a0f;
   --space-950: #ffffff;
-  --space-900: #fcfaf7;
-  --space-850: #f5f0e8;
-  --space-800: #ebe3d6;
-  --space-700: #d8cdbc;
-  --frost-50: #19141d;
-  --frost-100: #19141d;
-  --frost-200: #2e2636;
-  --frost-300: #4c4257;
-  --frost-400: #5d5268;
-  --frost-500: #786d84;
-  --frost-600: #93889e;
+  --space-900: #f8fafc;
+  --space-850: #f1f5f9;
+  --space-800: #e2e8f0;
+  --space-700: #cbd5e1;
+  --frost-50: #090a0f;
+  --frost-100: #0f172a;
+  --frost-200: #1e293b;
+  --frost-300: #334155;
+  --frost-400: #475569;
+  --frost-500: #64748b;
+  --frost-600: #94a3b8;
 
-  --surface-card: #ffffff;
-  --surface-raised: #f5f0e8;
-  --border-hairline: rgba(25, 20, 29, 0.09);
-  --border-hairline-strong: rgba(234, 88, 12, 0.25);
+  --surface-card: rgba(255, 255, 255, 0.9);
+  --surface-raised: rgba(15, 23, 42, 0.04);
+  --border-hairline: rgba(15, 23, 42, 0.09);
+  --border-hairline-strong: rgba(15, 23, 42, 0.16);
 
-  --grid-color: rgba(234, 88, 12, 0.045);
-  --hairline-color: rgba(25, 20, 29, 0.08);
+  --grid-color: rgba(15, 23, 42, 0.035);
+  --hairline-color: rgba(15, 23, 42, 0.08);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
   text-rendering: optimizeLegibility;
-  transition: background-color 0.2s cubic-bezier(0.22, 1, 0.36, 1),
-    color 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: background-color 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+    color 0.25s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 ::selection {
-  background: rgba(249, 115, 22, 0.32);
+  background: rgba(8, 207, 254, 0.3);
   color: #ffffff;
 }
 
 .glass {
   background: var(--surface-card);
   border: 1px solid var(--border-hairline);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
 }
 
 .glass-strong {
   background: var(--surface-card);
   border: 1px solid var(--border-hairline-strong);
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
 }
 
 .hairline {
@@ -114,24 +118,32 @@ body {
 
 @layer components {
   .btn-primary {
-    background: linear-gradient(135deg, #ea580c 0%, #f97316 100%);
+    background-color: #090a0f;
     color: #ffffff;
-    box-shadow: 0 8px 24px -8px rgba(234, 88, 12, 0.55),
-      inset 0 1px 0 rgba(255, 255, 255, 0.28);
-    transition: transform 0.16s cubic-bezier(0.22, 1, 0.36, 1),
-      box-shadow 0.18s cubic-bezier(0.22, 1, 0.36, 1),
-      filter 0.18s cubic-bezier(0.22, 1, 0.36, 1);
+    box-shadow: 0 10px 28px -10px rgba(9, 10, 15, 0.45);
+    transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1),
+      background-color 0.2s cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 0.2s cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   .btn-primary:hover:not(:disabled) {
-    filter: brightness(1.06);
-    transform: translateY(-1px);
-    box-shadow: 0 12px 28px -6px rgba(234, 88, 12, 0.65),
-      inset 0 1px 0 rgba(255, 255, 255, 0.35);
+    transform: translateY(-2px);
+    background-color: #1e293b;
   }
 
   .btn-primary:active:not(:disabled) {
     transform: scale(0.98);
+  }
+
+  .dark .btn-primary {
+    background-color: #ffffff;
+    color: #060607;
+    box-shadow: 0 10px 30px -10px rgba(255, 255, 255, 0.35);
+  }
+
+  .dark .btn-primary:hover:not(:disabled) {
+    background-color: #f1f5f9;
+    box-shadow: 0 14px 34px -8px rgba(8, 207, 254, 0.35);
   }
 }
 
@@ -139,12 +151,12 @@ body {
   background-image:
     linear-gradient(var(--grid-color) 1px, transparent 1px),
     linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
-  background-size: 48px 48px;
+  background-size: 52px 52px;
   mask-image: radial-gradient(ellipse 85% 65% at 50% 0%, black 30%, transparent 78%);
   -webkit-mask-image: radial-gradient(ellipse 85% 65% at 50% 0%, black 30%, transparent 78%);
 }
 
-/* 3D Spatial Stage & Cube Utilities */
+/* Sweeping Ribbon & 3D Stage */
 .perspective-stage {
   perspective: 1100px;
 }
@@ -153,92 +165,72 @@ body {
   transform-style: preserve-3d;
 }
 
-@keyframes spin-3d-cube {
-  0% {
-    transform: rotateX(-18deg) rotateY(0deg);
+@keyframes ribbon-breathe {
+  0%, 100% {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 0.85;
   }
   50% {
-    transform: rotateX(-10deg) rotateY(180deg);
-  }
-  100% {
-    transform: rotateX(-18deg) rotateY(360deg);
+    transform: translate3d(16px, -10px, 0) scale(1.03);
+    opacity: 1;
   }
 }
 
-@keyframes orbit-ring {
-  from {
-    transform: rotateX(72deg) rotateZ(0deg);
-  }
-  to {
-    transform: rotateX(72deg) rotateZ(360deg);
-  }
-}
-
-.animate-cube-spin {
-  animation: spin-3d-cube 18s linear infinite;
-}
-
-.animate-orbit-ring {
-  animation: orbit-ring 14s linear infinite;
+.animate-ribbon {
+  animation: ribbon-breathe 12s ease-in-out infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .animate-cube-spin,
-  .animate-orbit-ring {
+  .animate-ribbon {
     animation: none;
   }
 }
 
 .light .glass {
-  box-shadow: 0 1px 3px rgba(25, 20, 29, 0.05);
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
 }
 
 .light .glass:hover {
-  border-color: rgba(234, 88, 12, 0.35);
-  box-shadow: 0 12px 28px -10px rgba(234, 88, 12, 0.14);
+  border-color: rgba(8, 145, 178, 0.4);
+  box-shadow: 0 12px 28px -10px rgba(8, 145, 178, 0.14);
 }
 
 .light .glass-strong {
-  box-shadow: 0 16px 36px -12px rgba(25, 20, 29, 0.09);
+  box-shadow: 0 16px 36px -12px rgba(15, 23, 42, 0.09);
 }
 
 .light [class*="hover:text-white"]:hover,
 .light [class*="hover:text-frost-50"]:hover {
-  color: #19141d;
+  color: #090a0f;
 }
 
 .light [class*="border-white/8"],
 .light [class*="border-white/10"],
 .light [class*="border-white/12"] {
-  border-color: rgba(25, 20, 29, 0.09);
+  border-color: rgba(15, 23, 42, 0.09);
 }
 
 .light [class*="border-white/15"],
 .light [class*="border-white/20"],
 .light [class*="border-white/25"] {
-  border-color: rgba(25, 20, 29, 0.15);
+  border-color: rgba(15, 23, 42, 0.15);
 }
 
 .light [class*="border-white/30"],
 .light [class*="border-white/35"] {
-  border-color: rgba(25, 20, 29, 0.24);
+  border-color: rgba(15, 23, 42, 0.24);
 }
 
 .light [class*="bg-white/[0.03]"],
 .light [class*="bg-white/[0.04]"],
 .light [class*="bg-white/[0.05]"] {
-  background-color: rgba(25, 20, 29, 0.035);
+  background-color: rgba(15, 23, 42, 0.035);
 }
 
 .light [class*="bg-white/6"],
 .light [class*="bg-white/8"],
 .light [class*="bg-white/10"] {
-  background-color: rgba(25, 20, 29, 0.06);
-}
-
-.light .shadow-black\/50,
-.light .shadow-black\/40 {
-  --tw-shadow-color: rgba(25, 20, 29, 0.1);
+  background-color: rgba(15, 23, 42, 0.06);
 }
 
 .no-scrollbar {

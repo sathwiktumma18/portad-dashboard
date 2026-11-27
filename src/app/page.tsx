@@ -162,64 +162,101 @@ export default function Home() {
   return (
     <>
       {/* ── Hero ─────────────────────────────────────────────── */}
-      <div className="relative overflow-hidden border-b border-slate-200/80 dark:border-white/8">
-        <div aria-hidden className="grid-bg absolute inset-0" />
+      <div className="relative overflow-hidden border-b border-white/10 bg-[#060607] text-white">
+        {/* Sweeping Violet, Magenta & Cyan Light Ribbon */}
+        <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
+          <div
+            className="animate-ribbon absolute -left-1/4 -top-1/3 h-[680px] w-[140%] rounded-[100%] opacity-80 blur-[70px]"
+            style={{
+              background:
+                "conic-gradient(from 210deg at 45% 55%, rgba(6,6,7,0) 0deg, rgba(168,85,247,0.45) 55deg, rgba(236,72,153,0.55) 115deg, rgba(8,207,254,0.48) 170deg, rgba(6,6,7,0) 240deg)",
+              transform: "rotate(-12deg)",
+            }}
+          />
+          <svg
+            viewBox="0 0 1440 700"
+            className="absolute inset-0 h-full w-full opacity-55"
+            preserveAspectRatio="none"
+          >
+            <defs>
+              <linearGradient id="portadRibbon" x1="0%" y1="80%" x2="100%" y2="10%">
+                <stop offset="0%" stopColor="#7c3aed" stopOpacity="0" />
+                <stop offset="35%" stopColor="#a855f7" stopOpacity="0.6" />
+                <stop offset="65%" stopColor="#ec4899" stopOpacity="0.55" />
+                <stop offset="100%" stopColor="#08CFFE" stopOpacity="0.7" />
+              </linearGradient>
+            </defs>
+            <path
+              d="M -80 620 C 320 480, 680 280, 1520 70"
+              stroke="url(#portadRibbon)"
+              strokeWidth="48"
+              fill="none"
+              style={{ filter: "blur(24px)" }}
+            />
+            <path
+              d="M -60 580 C 340 440, 720 250, 1500 50"
+              stroke="url(#portadRibbon)"
+              strokeWidth="3"
+              fill="none"
+            />
+          </svg>
+        </div>
 
         <Section className="relative py-20 sm:py-28">
           <div className="grid items-center gap-12 lg:grid-cols-[1.1fr_1fr]">
             <div>
-              <Reveal>
-                <p className="font-mono text-xs text-frost-500">
-                  portad v0.1 · spec 0.1 · local-first
-                </p>
-              </Reveal>
-
-              <Reveal delay={0.06}>
-                <h1 className="mt-4 text-4xl font-medium leading-[1.06] tracking-tight text-frost-100 sm:text-6xl lg:text-7xl">
-                  Move your workspace.
+              <Reveal delay={0.05} y={18}>
+                <h1 className="text-4xl font-bold leading-[1.06] tracking-tight text-white sm:text-6xl lg:text-[68px]">
+                  Move your
                   <br />
-                  <span className="bg-gradient-to-r from-orange-500 via-amber-500 to-teal-400 bg-clip-text text-transparent">
-                    Keep the truth.
-                  </span>
+                  workspace.
+                  <br />
+                  <span className="text-[#08CFFE]">Keep the truth.</span>
                 </h1>
               </Reveal>
 
-              <Reveal delay={0.12}>
-                <p className="mt-6 max-w-xl text-lg leading-7 text-frost-400">
-                  PortaD exports a SaaS workspace into a neutral, checksummed package,
-                  reports exactly what will survive the trip, and imports it into the
-                  target system — with a diff at the end that proves nothing was invented.
+              <Reveal delay={0.18} y={16}>
+                <p className="mt-6 max-w-xl text-base leading-7 text-[#D6D7E6] sm:text-lg">
+                  Export any SaaS workspace into a checksummed .portad package,
+                  verify every field against your rules, and import into the target
+                  system with round-trip proof.
                 </p>
               </Reveal>
 
-              <Reveal delay={0.18}>
-                <div className="mt-8 flex flex-wrap items-center gap-3">
+              <Reveal delay={0.28} y={14}>
+                <div className="mt-8 flex flex-wrap items-center gap-3.5">
                   <Link
                     href="/migrate"
-                    className="btn-primary group inline-flex items-center gap-2 rounded-lg px-5 py-3 text-sm font-medium"
+                    className="group inline-flex items-center gap-2.5 rounded-full bg-white py-2.5 pl-5 pr-2.5 text-sm font-semibold text-[#060607] shadow-[0_10px_30px_-10px_rgba(255,255,255,0.45)] transition-all hover:-translate-y-0.5 hover:bg-slate-100"
                   >
-                    Start a migration
-                    <IconArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                    <span>Start a migration</span>
+                    <span className="grid h-7 w-7 place-items-center rounded-full bg-[#060607] text-white transition-transform duration-300 group-hover:rotate-45">
+                      <IconArrowRight className="h-3.5 w-3.5 -rotate-45" />
+                    </span>
                   </Link>
                   <Link
                     href="/compatibility"
-                    className="inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-5 py-3 text-sm font-medium text-slate-700 transition-colors hover:border-slate-400 hover:bg-slate-50 hover:text-slate-900 dark:border-white/15 dark:bg-transparent dark:text-frost-200 dark:hover:border-white/30 dark:hover:text-white"
+                    className="inline-flex items-center gap-2 rounded-full border border-white/25 bg-transparent px-6 py-3 text-sm font-medium text-white transition-colors hover:border-white/45 hover:bg-white/10"
                   >
                     See what moves
                   </Link>
                 </div>
               </Reveal>
 
-              <Reveal delay={0.24}>
-                <div className="mt-8">
+              <Reveal delay={0.36} y={12}>
+                <div className="mt-8 flex flex-wrap items-center gap-4">
+                  <span className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.16em] text-[rgba(232,226,250,0.74)]">
+                    <span className="h-2 w-2 rounded-full border border-[#08CFFE]" />
+                    Local-first · SHA-256 verified · v0.1
+                  </span>
                   <ApiStatus />
                 </div>
               </Reveal>
             </div>
 
-            <Reveal delay={0.16} className="flex justify-center lg:justify-end">
+            <div className="flex justify-center lg:justify-end">
               <HeroVisual />
-            </Reveal>
+            </div>
           </div>
         </Section>
       </div>

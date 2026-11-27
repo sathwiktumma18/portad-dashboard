@@ -64,7 +64,7 @@ export default function TiltCard({
             className="pointer-events-none absolute inset-0 transition-opacity duration-300"
             style={{
               opacity: spotlight.active ? 1 : 0,
-              background: `radial-gradient(320px circle at ${spotlight.x}% ${spotlight.y}%, rgba(249, 115, 22, 0.14), transparent 70%)`,
+              background: `radial-gradient(320px circle at ${spotlight.x}% ${spotlight.y}%, rgba(8, 207, 254, 0.14), transparent 70%)`,
             }}
           />
         )}
