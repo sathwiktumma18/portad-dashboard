@@ -1,4 +1,3 @@
-
 const DEFAULT_ITEMS = [
   "Notion",
   "Trello",
@@ -17,17 +16,18 @@ const DEFAULT_ITEMS = [
 function Row({ items }: { items: string[] }) {
   return (
     <div
-      className="flex shrink-0 items-center gap-3 pr-3"
+      className="flex shrink-0 items-center gap-3.5 py-3 pr-3.5"
       aria-hidden="true"
     >
       {items.map((item, index) => (
         <span
           key={`${item}-${index}`}
-          className="glass flex items-center gap-2.5 rounded-full px-5 py-2.5 text-sm font-medium text-slate-700 shadow-xs transition-colors hover:border-brand-500/50 hover:text-slate-900 dark:text-frost-300 dark:shadow-none dark:hover:text-frost-50"
+          style={{ animationDelay: `${index * -0.32}s` }}
+          className="marquee-dance-pill glass flex items-center gap-2.5 rounded-full px-5 py-2.5 text-sm font-medium text-slate-700 transition-colors hover:border-[#08CFFE]/60 hover:text-slate-900 dark:text-frost-200 dark:hover:text-white"
         >
           <span
             aria-hidden="true"
-            className="h-1.5 w-1.5 rounded-full bg-gradient-to-r from-brand-400 to-ice-400"
+            className="h-1.5 w-1.5 rounded-full bg-gradient-to-r from-fuchsia-400 to-[#08CFFE]"
           />
           {item}
         </span>
@@ -43,7 +43,7 @@ export default function Marquee({
 }) {
   return (
     <div
-      className="relative overflow-hidden [mask-image:linear-gradient(90deg,transparent,black_12%,black_88%,transparent)] [-webkit-mask-image:linear-gradient(90deg,transparent,black_12%,black_88%,transparent)]"
+      className="perspective-stage relative overflow-hidden py-1 [mask-image:linear-gradient(90deg,transparent,black_10%,black_90%,transparent)] [-webkit-mask-image:linear-gradient(90deg,transparent,black_10%,black_90%,transparent)]"
       role="group"
       aria-label="Platforms supported by PortaD"
     >

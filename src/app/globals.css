@@ -248,9 +248,43 @@ body {
   animation: aurora-3d-two 20s ease-in-out infinite;
 }
 
+@keyframes marquee-scroll {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@keyframes marquee-dance {
+  0%, 100% {
+    transform: perspective(700px) translate3d(0, -4px, 10px) rotateX(6deg) rotateZ(-1deg);
+  }
+  50% {
+    transform: perspective(700px) translate3d(0, 4px, 0px) rotateX(-6deg) rotateZ(1deg);
+  }
+}
+
+.marquee {
+  animation: marquee-scroll 28s linear infinite;
+  will-change: transform;
+}
+
+.marquee:hover {
+  animation-play-state: paused;
+}
+
+.marquee-dance-pill {
+  animation: marquee-dance 3.6s ease-in-out infinite;
+  will-change: transform;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .animate-aurora-3d-one,
-  .animate-aurora-3d-two {
+  .animate-aurora-3d-two,
+  .marquee,
+  .marquee-dance-pill {
     animation: none;
   }
 }

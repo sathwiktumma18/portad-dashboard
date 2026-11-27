@@ -3,6 +3,7 @@ import Link from "next/link";
 import Accordion from "@/components/accordion";
 import ApiStatus from "@/components/api-status";
 import Carousel from "@/components/carousel";
+import HeroRibbon from "@/components/hero-ribbon";
 import HeroVisual from "@/components/hero-visual";
 import {
   IconArrowRight,
@@ -185,28 +186,7 @@ export default function Home() {
 
       {/* ── Hero ─────────────────────────────────────────────── */}
       <div className="relative border-b border-slate-200/70 text-slate-900 dark:border-white/10 dark:text-white">
-        {/* Crisp sweeping ribbon line */}
-        <svg
-          aria-hidden
-          viewBox="0 0 1440 700"
-          className="pointer-events-none absolute inset-0 h-full w-full opacity-45 dark:opacity-60"
-          preserveAspectRatio="none"
-        >
-          <defs>
-            <linearGradient id="portadRibbon" x1="0%" y1="80%" x2="100%" y2="10%">
-              <stop offset="0%" stopColor="#7c3aed" stopOpacity="0" />
-              <stop offset="35%" stopColor="#a855f7" stopOpacity="0.6" />
-              <stop offset="65%" stopColor="#ec4899" stopOpacity="0.55" />
-              <stop offset="100%" stopColor="#08CFFE" stopOpacity="0.7" />
-            </linearGradient>
-          </defs>
-          <path
-            d="M -60 580 C 340 440, 720 250, 1500 50"
-            stroke="url(#portadRibbon)"
-            strokeWidth="2.5"
-            fill="none"
-          />
-        </svg>
+        <HeroRibbon />
 
         <Section className="relative py-20 sm:py-28">
           <div className="grid items-center gap-12 lg:grid-cols-[1.1fr_1fr]">

@@ -4,15 +4,15 @@ import { useState } from "react";
 import { motion, useMotionValue, useReducedMotion, useSpring } from "motion/react";
 
 const INPUTS = [
-  { id: "pages", label: "Pages", meta: "1,284", y: 24, delay: 0.08 },
-  { id: "dbs", label: "Databases", meta: "48", y: 78, delay: 0.45 },
-  { id: "files", label: "Attachments", meta: "84 MB", y: 132, delay: 0.82 },
+  { id: "pages", label: "Notion Pages", meta: "412 docs", y: 24, delay: 0.08 },
+  { id: "tables", label: "Notion Tables", meta: "48 dbs", y: 78, delay: 0.45 },
+  { id: "files", label: "Media & Files", meta: "84 MB", y: 132, delay: 0.82 },
 ];
 
 const OUTPUTS = [
-  { id: "preserved", label: "✓ Preserved", y: 24, delay: 0.55 },
-  { id: "checksummed", label: "✓ Checksummed", y: 78, delay: 0.92 },
-  { id: "ready", label: "✓ Huly Ready", y: 132, delay: 1.28 },
+  { id: "docs", label: "✓ Huly Docs", meta: "412", y: 24, delay: 0.55 },
+  { id: "boards", label: "✓ Huly Boards", meta: "48", y: 78, delay: 0.92 },
+  { id: "sha", label: "✓ SHA-256 Safe", meta: "0 drops", y: 132, delay: 1.28 },
 ];
 
 const TILT_SPRING = { stiffness: 200, damping: 22, mass: 0.7 };
@@ -43,11 +43,11 @@ export default function HeroVisual() {
 
   return (
     <div
-      className="perspective-stage w-full max-w-[520px]"
+      className="perspective-stage w-full max-w-[540px]"
       onPointerMove={handlePointerMove}
       onPointerLeave={handlePointerLeave}
     >
-      {/* Gentle continuous 3D floating + pointer-steered tilt */}
+      {/* Continuous 3D breathing float + pointer-steered tilt */}
       <motion.div
         animate={
           reduce
@@ -72,9 +72,9 @@ export default function HeroVisual() {
                 transformStyle: "preserve-3d",
               }
         }
-        className="preserve-3d relative overflow-hidden rounded-3xl border border-white/20 bg-[#101116]/90 p-6 text-white shadow-[0_32px_90px_-24px_rgba(15,23,42,0.55)] backdrop-blur-2xl dark:shadow-[0_32px_90px_-24px_rgba(8,207,254,0.3)]"
+        className="preserve-3d relative overflow-hidden rounded-3xl border border-white/20 bg-[#101116]/92 p-6 text-white shadow-[0_32px_90px_-24px_rgba(15,23,42,0.55)] backdrop-blur-2xl dark:shadow-[0_32px_90px_-24px_rgba(8,207,254,0.3)]"
       >
-        {/* Ambient moving violet/cyan inner glow */}
+        {/* Ambient violet/cyan inner glows */}
         <div
           aria-hidden
           className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-fuchsia-500/25 blur-3xl"
@@ -85,11 +85,11 @@ export default function HeroVisual() {
         />
 
         {/* Card header */}
-        <div className="relative flex items-center justify-between gap-2 pb-5">
+        <div className="relative flex items-center justify-between gap-2 pb-4">
           <div className="flex items-center gap-2">
             <span className="h-2 w-2 rounded-full bg-[#08CFFE] shadow-[0_0_12px_#08CFFE]" />
             <span className="font-mono text-xs text-[#D6D7E6]">
-              portad · 3D verification flow
+              Live migration pipeline
             </span>
           </div>
           <button
@@ -101,12 +101,19 @@ export default function HeroVisual() {
           </button>
         </div>
 
-        {/* Keyed animation container so Replay restarts the entire wave from scratch */}
+        {/* Clear 3-Stage Story Header so first-time users instantly understand */}
+        <div className="relative mb-3 grid grid-cols-[1fr_76px_1fr] text-center font-mono text-[10px] uppercase tracking-wider text-white/55 sm:grid-cols-[1fr_88px_1fr]">
+          <span>1. Source Export</span>
+          <span>2. Verify</span>
+          <span>3. Target Ready</span>
+        </div>
+
+        {/* Keyed animation container so Replay restarts the entire wave cleanly */}
         <div
           key={runKey}
           className="preserve-3d relative my-2 grid grid-cols-[1fr_76px_1fr] items-center gap-0 sm:grid-cols-[1fr_88px_1fr]"
         >
-          {/* Left: 3 Input Pills (solid dark glass so lines connect cleanly to edge) */}
+          {/* Left: 3 Notion Source Pills */}
           <div
             className="preserve-3d relative z-20 flex flex-col gap-3"
             style={reduce ? undefined : { transform: "translateZ(16px)" }}
@@ -139,7 +146,7 @@ export default function HeroVisual() {
                   delay: item.delay,
                   ease: EASE,
                 }}
-                className="flex h-[36px] items-center justify-between gap-2 rounded-full border border-white/20 bg-[#22242a] px-3.5 text-xs text-[#F1F2F7] shadow-md transition-colors hover:border-fuchsia-400/70 hover:bg-[#2d3038]"
+                className="flex h-[36px] items-center justify-between gap-2 rounded-full border border-white/20 bg-[#22242a] px-3 text-xs text-[#F1F2F7] shadow-md transition-colors hover:border-fuchsia-400/70 hover:bg-[#2d3038]"
               >
                 <span className="truncate font-medium">{item.label}</span>
                 <span className="hidden font-mono text-[10px] text-white/60 sm:inline">
@@ -149,26 +156,24 @@ export default function HeroVisual() {
             ))}
           </div>
 
-          {/* Center: Clean SVG Connectors + Wave Light Beams + Popped-Out 3D Shield Hub */}
-          <div className="preserve-3d relative flex h-[156px] items-center justify-center">
+          {/* Center: SVG Connectors + Continuous Light Waves + Popped-Out PortaD Shield */}
+          <div className="preserve-3d relative flex h-[156px] flex-col items-center justify-center">
             <svg
               aria-hidden
               viewBox="0 0 100 156"
               className="pointer-events-none absolute inset-0 h-full w-full overflow-visible"
               fill="none"
             >
-              {/* Left -> Center Input Curves */}
+              {/* Left -> Center Curves */}
               {INPUTS.map((item) => {
-                const pathD = `M -4 ${item.y} C 24 ${item.y}, 30 78, 50 78`;
+                const pathD = `M -2 ${item.y} C 24 ${item.y}, 30 78, 50 78`;
                 return (
                   <g key={`in-${item.id}`}>
-                    {/* Base subtle track */}
                     <path
                       d={pathD}
                       stroke="rgba(255,255,255,0.16)"
                       strokeWidth="1.5"
                     />
-                    {/* Initial draw-in wave */}
                     <motion.path
                       d={pathD}
                       stroke="#E879F9"
@@ -182,7 +187,6 @@ export default function HeroVisual() {
                         ease: EASE,
                       }}
                     />
-                    {/* Continuous flowing light pulse wave */}
                     {!reduce && (
                       <motion.path
                         d={pathD}
@@ -205,18 +209,16 @@ export default function HeroVisual() {
                 );
               })}
 
-              {/* Center -> Right Output Curves */}
+              {/* Center -> Right Curves */}
               {OUTPUTS.map((out) => {
-                const pathD = `M 50 78 C 70 78, 76 ${out.y}, 104 ${out.y}`;
+                const pathD = `M 50 78 C 70 78, 76 ${out.y}, 102 ${out.y}`;
                 return (
                   <g key={`out-${out.id}`}>
-                    {/* Base subtle track */}
                     <path
                       d={pathD}
                       stroke="rgba(8,207,254,0.2)"
                       strokeWidth="1.5"
                     />
-                    {/* Initial draw-in wave */}
                     <motion.path
                       d={pathD}
                       stroke="#08CFFE"
@@ -230,7 +232,6 @@ export default function HeroVisual() {
                         ease: EASE,
                       }}
                     />
-                    {/* Continuous flowing cyan light pulse wave */}
                     {!reduce && (
                       <motion.path
                         d={pathD}
@@ -253,7 +254,7 @@ export default function HeroVisual() {
                 );
               })}
 
-              {/* Vertical Stem from Hub */}
+              {/* Vertical Stem */}
               <motion.line
                 x1="50"
                 y1="96"
@@ -267,7 +268,7 @@ export default function HeroVisual() {
               />
             </svg>
 
-            {/* Popped-out 3D White Shield Hub Tile */}
+            {/* Popped-out 3D White PortaD Shield Hub */}
             <motion.div
               initial={reduce ? false : { scale: 0.6, opacity: 0 }}
               animate={{
@@ -303,9 +304,15 @@ export default function HeroVisual() {
                 />
               </svg>
             </motion.div>
+            <span
+              className="relative z-30 mt-2 rounded-full bg-[#101116]/90 px-2 py-0.5 font-mono text-[9px] text-[#08CFFE]"
+              style={reduce ? undefined : { transform: "translateZ(22px)" }}
+            >
+              .portad
+            </span>
           </div>
 
-          {/* Right: 3 Cyan Verified Output Pills lighting up in wave sequence */}
+          {/* Right: 3 Huly Target Output Pills */}
           <div
             className="preserve-3d relative z-20 flex flex-col gap-3"
             style={reduce ? undefined : { transform: "translateZ(16px)" }}
@@ -334,21 +341,24 @@ export default function HeroVisual() {
                   delay: out.delay,
                   ease: EASE,
                 }}
-                className="flex h-[36px] items-center justify-center rounded-full border border-[#08CFFE]/70 bg-[#0d3548] px-3 text-xs font-medium text-[#7ee8ff] shadow-[0_0_20px_-6px_rgba(8,207,254,0.6)] transition-all hover:bg-[#104761] hover:text-white"
+                className="flex h-[36px] items-center justify-between gap-2 rounded-full border border-[#08CFFE]/70 bg-[#0d3548] px-3 text-xs font-medium text-[#7ee8ff] shadow-[0_0_20px_-6px_rgba(8,207,254,0.6)] transition-all hover:bg-[#104761] hover:text-white"
               >
-                {out.label}
+                <span className="truncate">{out.label}</span>
+                <span className="hidden font-mono text-[10px] text-[#7ee8ff]/75 sm:inline">
+                  {out.meta}
+                </span>
               </motion.div>
             ))}
           </div>
         </div>
 
         {/* Bottom verification stem label */}
-        <div className="relative mt-6 flex items-center justify-between border-t border-white/12 pt-3.5 text-xs">
+        <div className="relative mt-5 flex items-center justify-between border-t border-white/12 pt-3.5 text-xs">
           <span className="font-mono text-[11px] text-white/65">
-            sha256:9f2c…e41a
+            5-layer check · sha256:9f2c…e41a
           </span>
           <span className="font-mono text-[11px] font-medium text-[#08CFFE]">
-            Notion → .portad → Huly
+            0 silent drops
           </span>
         </div>
       </motion.div>
