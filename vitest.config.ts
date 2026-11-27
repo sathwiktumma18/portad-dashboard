@@ -9,10 +9,11 @@ export default defineConfig({
     setupFiles: ["./vitest.setup.ts"],
     clearMocks: true,
     exclude: [
-      "**/node_modules/**",
-      "**/dist/**",
-      "tests/e2e/**",
-    ],
+        "**/node_modules/**",
+        "**/dist/**",
+        "**/portad-dashboard/**",
+        "tests/e2e/**",
+      ],
   },
   resolve: {
     alias: {
