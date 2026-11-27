@@ -4,15 +4,15 @@ import { useState } from "react";
 import { motion, useMotionValue, useReducedMotion, useSpring } from "motion/react";
 
 const INPUTS = [
-  { id: "pages", label: "Pages", meta: "1,284" },
-  { id: "dbs", label: "Databases", meta: "48" },
-  { id: "files", label: "Attachments", meta: "84 MB" },
+  { id: "pages", label: "Pages", meta: "1,284", y: 24 },
+  { id: "dbs", label: "Databases", meta: "48", y: 78 },
+  { id: "files", label: "Attachments", meta: "84 MB", y: 132 },
 ];
 
 const OUTPUTS = [
-  { id: "preserved", label: "✓ Preserved", delay: 0.95 },
-  { id: "checksummed", label: "✓ Checksummed", delay: 1.1 },
-  { id: "ready", label: "✓ Huly Ready", delay: 1.25 },
+  { id: "preserved", label: "✓ Preserved", delay: 0.85, y: 24 },
+  { id: "checksummed", label: "✓ Checksummed", delay: 1.0, y: 78 },
+  { id: "ready", label: "✓ Huly Ready", delay: 1.15, y: 132 },
 ];
 
 const TILT_SPRING = { stiffness: 220, damping: 24, mass: 0.7 };
@@ -43,7 +43,7 @@ export default function HeroVisual() {
 
   return (
     <div
-      className="perspective-stage w-full max-w-[490px]"
+      className="perspective-stage w-full max-w-[500px]"
       onPointerMove={handlePointerMove}
       onPointerLeave={handlePointerLeave}
     >
@@ -61,30 +61,30 @@ export default function HeroVisual() {
                 transformStyle: "preserve-3d",
               }
         }
-        className="glass-strong hairline relative overflow-hidden rounded-3xl p-6 shadow-[0_30px_90px_-30px_rgba(8,207,254,0.22)]"
+        className="relative overflow-hidden rounded-3xl border border-white/15 bg-[#121318]/95 p-6 text-white shadow-[0_28px_80px_-24px_rgba(15,23,42,0.45)] backdrop-blur-xl dark:shadow-[0_30px_90px_-30px_rgba(8,207,254,0.28)]"
       >
-        {/* Subtle violet/cyan ambient corner highlight */}
+        {/* Ambient violet/cyan corner highlights */}
         <div
           aria-hidden
-          className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-fuchsia-500/15 blur-3xl"
+          className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-fuchsia-500/20 blur-3xl"
         />
         <div
           aria-hidden
-          className="pointer-events-none absolute -bottom-16 -left-16 h-48 w-48 rounded-full bg-[#08CFFE]/15 blur-3xl"
+          className="pointer-events-none absolute -bottom-16 -left-16 h-48 w-48 rounded-full bg-[#08CFFE]/20 blur-3xl"
         />
 
         {/* Card header */}
         <div className="relative flex items-center justify-between gap-2 pb-4">
           <div className="flex items-center gap-2">
             <span className="h-2 w-2 rounded-full bg-[#08CFFE] shadow-[0_0_10px_#08CFFE]" />
-            <span className="font-mono text-xs text-[#D6D7E6] light:text-slate-600">
+            <span className="font-mono text-xs text-[#D6D7E6]">
               portad · verification hub
             </span>
           </div>
           <button
             type="button"
             onClick={() => setRunKey((k) => k + 1)}
-            className="rounded-full border border-white/15 bg-white/[0.06] px-2.5 py-1 font-mono text-[11px] text-[#D6D7E6] transition hover:border-[#08CFFE]/60 hover:text-white"
+            className="rounded-full border border-white/25 bg-white/10 px-3 py-1 font-mono text-[11px] font-medium text-white transition hover:border-[#08CFFE] hover:bg-white/20"
           >
             Replay flow ↻
           </button>
@@ -100,53 +100,80 @@ export default function HeroVisual() {
                 initial={reduce ? false : { opacity: 0, x: -12 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.4, delay: 0.15 + i * 0.1, ease: EASE }}
-                className="group flex items-center justify-between gap-2 rounded-full border border-white/12 bg-[rgba(59,61,65,0.62)] px-3 py-2 text-xs text-[#D6D7E6] transition-all hover:border-white/30 hover:bg-[rgba(75,78,84,0.75)] hover:text-white"
+                className="group flex items-center justify-between gap-2 rounded-full border border-white/15 bg-[#2a2c32]/85 px-3 py-2 text-xs text-[#E4E6F0] transition-all hover:border-white/35 hover:bg-[#3a3d45] hover:text-white"
               >
                 <span className="truncate font-medium">{item.label}</span>
-                <span className="hidden font-mono text-[10px] text-white/60 sm:inline">
+                <span className="hidden font-mono text-[10px] text-white/65 sm:inline">
                   {item.meta}
                 </span>
               </motion.div>
             ))}
           </div>
 
-          {/* Center: Animated SVG Connectors + White Shield Hub + Stem */}
+          {/* Center: Animated SVG Connectors + Flowing Packets + White Shield Hub */}
           <div className="relative flex flex-col items-center justify-center px-1 sm:px-2">
-            {/* SVG Connector Lines Left -> Hub -> Right */}
             <svg
               aria-hidden
               viewBox="0 0 180 156"
               className="pointer-events-none absolute -left-[52px] -right-[52px] top-1/2 h-[156px] w-[180px] -translate-y-1/2 overflow-visible sm:-left-[64px] sm:-right-[64px] sm:w-[208px]"
               fill="none"
             >
-              {/* 3 Input lines joining center */}
-              {[24, 78, 132].map((y, idx) => (
-                <motion.path
-                  key={`in-${y}`}
-                  d={`M 4 ${y} C 45 ${y}, 55 78, 86 78`}
-                  stroke="rgba(255,255,255,0.42)"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  initial={reduce ? false : { pathLength: 0, opacity: 0.2 }}
-                  animate={{ pathLength: 1, opacity: 1 }}
-                  transition={{ duration: 0.55, delay: 0.35 + idx * 0.08, ease: EASE }}
-                />
-              ))}
+              {/* 3 Input lines joining center + continuous flowing light dots */}
+              {INPUTS.map((item, idx) => {
+                const pathD = `M 4 ${item.y} C 45 ${item.y}, 55 78, 86 78`;
+                return (
+                  <g key={`in-${item.id}`}>
+                    <motion.path
+                      d={pathD}
+                      stroke="rgba(255,255,255,0.45)"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      initial={reduce ? false : { pathLength: 0, opacity: 0.2 }}
+                      animate={{ pathLength: 1, opacity: 1 }}
+                      transition={{ duration: 0.55, delay: 0.3 + idx * 0.08, ease: EASE }}
+                    />
+                    {!reduce && (
+                      <circle r="2.6" fill="#E879F9">
+                        <animateMotion
+                          dur="2.2s"
+                          begin={`${idx * 0.45}s`}
+                          repeatCount="indefinite"
+                          path={pathD}
+                        />
+                      </circle>
+                    )}
+                  </g>
+                );
+              })}
 
-              {/* 3 Output lines fanning to Cyan pills */}
-              {[24, 78, 132].map((y, idx) => (
-                <motion.path
-                  key={`out-${y}`}
-                  d={`M 94 78 C 125 78, 135 ${y}, 176 ${y}`}
-                  stroke="#08CFFE"
-                  strokeOpacity="0.65"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  initial={reduce ? false : { pathLength: 0, opacity: 0.2 }}
-                  animate={{ pathLength: 1, opacity: 1 }}
-                  transition={{ duration: 0.55, delay: 0.7 + idx * 0.1, ease: EASE }}
-                />
-              ))}
+              {/* 3 Output lines fanning to Cyan pills + continuous flowing cyan dots */}
+              {OUTPUTS.map((out, idx) => {
+                const pathD = `M 94 78 C 125 78, 135 ${out.y}, 176 ${out.y}`;
+                return (
+                  <g key={`out-${out.id}`}>
+                    <motion.path
+                      d={pathD}
+                      stroke="#08CFFE"
+                      strokeOpacity="0.7"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      initial={reduce ? false : { pathLength: 0, opacity: 0.2 }}
+                      animate={{ pathLength: 1, opacity: 1 }}
+                      transition={{ duration: 0.55, delay: 0.65 + idx * 0.1, ease: EASE }}
+                    />
+                    {!reduce && (
+                      <circle r="2.8" fill="#08CFFE">
+                        <animateMotion
+                          dur="2.2s"
+                          begin={`${0.9 + idx * 0.45}s`}
+                          repeatCount="indefinite"
+                          path={pathD}
+                        />
+                      </circle>
+                    )}
+                  </g>
+                );
+              })}
 
               {/* Vertical Stem from Hub */}
               <motion.line
@@ -154,21 +181,21 @@ export default function HeroVisual() {
                 y1="96"
                 x2="90"
                 y2="178"
-                stroke="rgba(255,255,255,0.28)"
+                stroke="rgba(255,255,255,0.3)"
                 strokeWidth="1.25"
                 initial={reduce ? false : { pathLength: 0 }}
                 animate={{ pathLength: 1 }}
-                transition={{ duration: 0.5, delay: 1.0, ease: EASE }}
+                transition={{ duration: 0.5, delay: 0.95, ease: EASE }}
               />
             </svg>
 
-            {/* White Rounded Shield / Vault Hub Tile */}
+            {/* White Rounded Shield Hub Tile */}
             <motion.div
               initial={reduce ? false : { scale: 0.65, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              transition={{ duration: 0.45, delay: 0.6, ease: EASE }}
+              transition={{ duration: 0.45, delay: 0.55, ease: EASE }}
               whileHover={reduce ? undefined : { scale: 1.08 }}
-              className="relative z-20 grid h-14 w-14 place-items-center rounded-2xl bg-white text-[#060607] shadow-[0_0_28px_rgba(255,255,255,0.35)] transition-shadow hover:shadow-[0_0_38px_rgba(8,207,254,0.75)]"
+              className="relative z-20 grid h-14 w-14 place-items-center rounded-2xl bg-white text-[#060607] shadow-[0_0_28px_rgba(255,255,255,0.35)] transition-shadow hover:shadow-[0_0_38px_rgba(8,207,254,0.8)]"
             >
               <svg
                 viewBox="0 0 24 24"
@@ -199,15 +226,15 @@ export default function HeroVisual() {
                 initial={
                   reduce
                     ? false
-                    : { opacity: 0.35, scale: 0.94, borderColor: "rgba(255,255,255,0.12)" }
+                    : { opacity: 0.35, scale: 0.94, borderColor: "rgba(255,255,255,0.15)" }
                 }
                 animate={{
                   opacity: 1,
                   scale: 1,
-                  borderColor: "rgba(8,207,254,0.65)",
+                  borderColor: "rgba(8,207,254,0.7)",
                 }}
                 transition={{ duration: 0.45, delay: out.delay, ease: EASE }}
-                className="flex items-center justify-center rounded-full border border-[#08CFFE]/60 bg-[rgba(12,60,82,0.62)] px-3 py-2 text-xs font-medium text-[#7ee8ff] shadow-[0_0_18px_-6px_rgba(8,207,254,0.5)] transition-all hover:bg-[rgba(12,75,102,0.85)] hover:text-white"
+                className="flex items-center justify-center rounded-full border border-[#08CFFE]/65 bg-[#0c3c52]/75 px-3 py-2 text-xs font-medium text-[#7ee8ff] shadow-[0_0_18px_-6px_rgba(8,207,254,0.55)] transition-all hover:bg-[#0e4e6b] hover:text-white"
               >
                 {out.label}
               </motion.div>
@@ -216,8 +243,8 @@ export default function HeroVisual() {
         </div>
 
         {/* Bottom verification stem label */}
-        <div className="relative mt-6 flex items-center justify-between border-t border-white/10 pt-3.5 text-xs">
-          <span className="font-mono text-[11px] text-white/60">
+        <div className="relative mt-6 flex items-center justify-between border-t border-white/12 pt-3.5 text-xs">
+          <span className="font-mono text-[11px] text-white/65">
             sha256:9f2c…e41a
           </span>
           <span className="font-mono text-[11px] font-medium text-[#08CFFE]">

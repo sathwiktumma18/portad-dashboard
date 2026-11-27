@@ -162,11 +162,11 @@ export default function Home() {
   return (
     <>
       {/* ── Hero ─────────────────────────────────────────────── */}
-      <div className="relative overflow-hidden border-b border-white/10 bg-[#060607] text-white">
+      <div className="relative overflow-hidden border-b border-slate-200 bg-gradient-to-br from-[#f6f4ff] via-[#f8fafc] to-[#ecfeff] text-slate-900 dark:border-white/10 dark:from-[#060607] dark:via-[#060607] dark:to-[#060607] dark:text-white">
         {/* Sweeping Violet, Magenta & Cyan Light Ribbon */}
         <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
           <div
-            className="animate-ribbon absolute -left-1/4 -top-1/3 h-[680px] w-[140%] rounded-[100%] opacity-80 blur-[70px]"
+            className="animate-ribbon absolute -left-1/4 -top-1/3 h-[680px] w-[140%] rounded-[100%] opacity-45 blur-[70px] dark:opacity-80"
             style={{
               background:
                 "conic-gradient(from 210deg at 45% 55%, rgba(6,6,7,0) 0deg, rgba(168,85,247,0.45) 55deg, rgba(236,72,153,0.55) 115deg, rgba(8,207,254,0.48) 170deg, rgba(6,6,7,0) 240deg)",
@@ -175,7 +175,7 @@ export default function Home() {
           />
           <svg
             viewBox="0 0 1440 700"
-            className="absolute inset-0 h-full w-full opacity-55"
+            className="absolute inset-0 h-full w-full opacity-45 dark:opacity-55"
             preserveAspectRatio="none"
           >
             <defs>
@@ -206,17 +206,17 @@ export default function Home() {
           <div className="grid items-center gap-12 lg:grid-cols-[1.1fr_1fr]">
             <div>
               <Reveal delay={0.05} y={18}>
-                <h1 className="text-4xl font-bold leading-[1.06] tracking-tight text-white sm:text-6xl lg:text-[68px]">
+                <h1 className="text-4xl font-bold leading-[1.06] tracking-tight text-slate-950 sm:text-6xl lg:text-[68px] dark:text-white">
                   Move your
                   <br />
                   workspace.
                   <br />
-                  <span className="text-[#08CFFE]">Keep the truth.</span>
+                  <span className="text-sky-600 dark:text-[#08CFFE]">Keep the truth.</span>
                 </h1>
               </Reveal>
 
               <Reveal delay={0.18} y={16}>
-                <p className="mt-6 max-w-xl text-base leading-7 text-[#D6D7E6] sm:text-lg">
+                <p className="mt-6 max-w-xl text-base leading-7 text-slate-600 sm:text-lg dark:text-[#D6D7E6]">
                   Export any SaaS workspace into a checksummed .portad package,
                   verify every field against your rules, and import into the target
                   system with round-trip proof.
@@ -227,16 +227,16 @@ export default function Home() {
                 <div className="mt-8 flex flex-wrap items-center gap-3.5">
                   <Link
                     href="/migrate"
-                    className="group inline-flex items-center gap-2.5 rounded-full bg-white py-2.5 pl-5 pr-2.5 text-sm font-semibold text-[#060607] shadow-[0_10px_30px_-10px_rgba(255,255,255,0.45)] transition-all hover:-translate-y-0.5 hover:bg-slate-100"
+                    className="group inline-flex items-center gap-2.5 rounded-full bg-slate-950 py-2.5 pl-5 pr-2.5 text-sm font-semibold text-white shadow-[0_10px_28px_-10px_rgba(15,23,42,0.4)] transition-all hover:-translate-y-0.5 hover:bg-slate-800 dark:bg-white dark:text-[#060607] dark:shadow-[0_10px_30px_-10px_rgba(255,255,255,0.45)] dark:hover:bg-slate-100"
                   >
                     <span>Start a migration</span>
-                    <span className="grid h-7 w-7 place-items-center rounded-full bg-[#060607] text-white transition-transform duration-300 group-hover:rotate-45">
+                    <span className="grid h-7 w-7 place-items-center rounded-full bg-[#08CFFE] text-slate-950 transition-transform duration-300 group-hover:rotate-45 dark:bg-[#060607] dark:text-white">
                       <IconArrowRight className="h-3.5 w-3.5 -rotate-45" />
                     </span>
                   </Link>
                   <Link
                     href="/compatibility"
-                    className="inline-flex items-center gap-2 rounded-full border border-white/25 bg-transparent px-6 py-3 text-sm font-medium text-white transition-colors hover:border-white/45 hover:bg-white/10"
+                    className="inline-flex items-center gap-2 rounded-full border border-slate-400/70 bg-white/80 px-6 py-3 text-sm font-medium text-slate-900 shadow-xs transition-colors hover:border-slate-600 hover:bg-white dark:border-white/25 dark:bg-white/5 dark:text-white dark:hover:border-white/50 dark:hover:bg-white/10"
                   >
                     See what moves
                   </Link>
@@ -245,8 +245,8 @@ export default function Home() {
 
               <Reveal delay={0.36} y={12}>
                 <div className="mt-8 flex flex-wrap items-center gap-4">
-                  <span className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.16em] text-[rgba(232,226,250,0.74)]">
-                    <span className="h-2 w-2 rounded-full border border-[#08CFFE]" />
+                  <span className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.16em] text-slate-600 dark:text-[rgba(232,226,250,0.74)]">
+                    <span className="h-2 w-2 rounded-full border border-sky-600 dark:border-[#08CFFE]" />
                     Local-first · SHA-256 verified · v0.1
                   </span>
                   <ApiStatus />
