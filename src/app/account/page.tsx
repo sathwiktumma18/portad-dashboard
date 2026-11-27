@@ -184,7 +184,7 @@ function SignInCard() {
               <button
                 type="submit"
                 disabled={busy !== null}
-                className="btn-gradient w-full rounded-2xl px-4 py-3 text-sm font-semibold text-white transition-all disabled:opacity-60"
+                className="btn-primary w-full rounded-xl px-4 py-3 text-sm font-medium disabled:opacity-50"
               >
                 {busy === "email"
                   ? "Working…"

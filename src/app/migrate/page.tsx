@@ -133,7 +133,7 @@ export default function Migrate() {
       <p className="text-xs font-semibold uppercase tracking-[0.22em] text-brand-400">
         New migration
       </p>
-      <h1 className="mt-3 text-3xl font-semibold tracking-tight text-gradient-soft sm:text-4xl">
+      <h1 className="mt-3 text-3xl font-medium tracking-tight text-frost-100 sm:text-4xl">
         Four steps, zero surprises
       </h1>
       <p className="mt-3 max-w-xl leading-7 text-frost-400">
@@ -507,7 +507,7 @@ export default function Migrate() {
           type="button"
           onClick={() => setStep((current) => Math.min(3, current + 1) as Step)}
           disabled={step === 3 || !canAdvance}
-          className="btn-gradient rounded-full px-6 py-2.5 text-sm font-semibold text-white transition-all disabled:cursor-not-allowed disabled:bg-none disabled:bg-slate-100 disabled:text-slate-400 disabled:shadow-none dark:disabled:bg-white/8 dark:disabled:text-frost-600"
+          className="btn-primary rounded-lg px-6 py-2.5 text-sm font-medium disabled:cursor-not-allowed disabled:bg-none disabled:bg-slate-200 disabled:text-slate-500 disabled:shadow-none disabled:transform-none dark:disabled:bg-white/10 dark:disabled:text-frost-500"
         >
           {step === 2 ? "Continue" : "Next"}
         </button>

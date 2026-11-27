@@ -59,7 +59,7 @@ export default function Jobs() {
             <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
               <Link
                 href="/migrate"
-                className="btn-gradient group inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold text-white transition-all"
+                className="btn-primary group inline-flex items-center gap-2 rounded-lg px-5 py-2.5 text-sm font-medium"
               >
                 Start a migration
                 <IconArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />

@@ -56,7 +56,7 @@ export function Wordmark({ className }: { className?: string }) {
         "text-[17px] font-semibold tracking-tight text-frost-50 " + (className ?? "")
       }
     >
-      Porta<span className="text-gradient-brand">D</span>
+      Porta<span className="text-brand-600 dark:text-brand-400">D</span>
     </span>
   );
 }
