@@ -280,11 +280,28 @@ body {
   will-change: transform;
 }
 
+.animate-pulse-dot {
+  animation: portad-pulse-dot 2.4s ease-in-out infinite;
+}
+
+@keyframes portad-pulse-dot {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.45;
+    transform: scale(0.82);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .animate-aurora-3d-one,
   .animate-aurora-3d-two,
   .marquee,
-  .marquee-dance-pill {
+  .marquee-dance-pill,
+  .animate-pulse-dot {
     animation: none;
     transform: none;
   }

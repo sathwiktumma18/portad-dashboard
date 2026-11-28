@@ -132,21 +132,29 @@ export default function HeroVisual() {
                         borderColor: "rgba(255,255,255,0.12)",
                       }
                 }
-                animate={{
-                  opacity: 1,
-                  x: 0,
-                  scale: 1,
-                  borderColor: [
-                    "rgba(255,255,255,0.15)",
-                    "rgba(232,121,249,0.85)",
-                    "rgba(255,255,255,0.22)",
-                  ],
-                }}
-                transition={{
-                  duration: 0.65,
-                  delay: item.delay,
-                  ease: EASE,
-                }}
+                animate={
+                  reduce
+                    ? undefined
+                    : {
+                        opacity: 1,
+                        x: 0,
+                        scale: 1,
+                        borderColor: [
+                          "rgba(255,255,255,0.15)",
+                          "rgba(232,121,249,0.85)",
+                          "rgba(255,255,255,0.22)",
+                        ],
+                      }
+                }
+                transition={
+                  reduce
+                    ? undefined
+                    : {
+                        duration: 0.65,
+                        delay: item.delay,
+                        ease: EASE,
+                      }
+                }
                 className="flex h-[36px] items-center justify-between gap-2 rounded-full border border-white/20 bg-[#22242a] px-3 text-xs text-[#F1F2F7] shadow-md transition-colors hover:border-fuchsia-400/70 hover:bg-[#2d3038]"
               >
                 <span className="truncate font-medium">{item.label}</span>
@@ -178,15 +186,24 @@ export default function HeroVisual() {
                     <motion.path
                       d={pathD}
                       stroke="#E879F9"
+                      strokeOpacity={reduce ? 0.45 : undefined}
                       strokeWidth="2"
                       strokeLinecap="round"
                       initial={reduce ? false : { pathLength: 0, opacity: 0.2 }}
-                      animate={{ pathLength: 1, opacity: [0.3, 1, 0.45] }}
-                      transition={{
-                        duration: 0.5,
-                        delay: item.delay + 0.12,
-                        ease: EASE,
-                      }}
+                      animate={
+                        reduce
+                          ? undefined
+                          : { pathLength: 1, opacity: [0.3, 1, 0.45] }
+                      }
+                      transition={
+                        reduce
+                          ? undefined
+                          : {
+                              duration: 0.5,
+                              delay: item.delay + 0.12,
+                              ease: EASE,
+                            }
+                      }
                     />
                     {!reduce && (
                       <motion.path
@@ -223,15 +240,24 @@ export default function HeroVisual() {
                     <motion.path
                       d={pathD}
                       stroke="#08CFFE"
+                      strokeOpacity={reduce ? 0.7 : undefined}
                       strokeWidth="2"
                       strokeLinecap="round"
                       initial={reduce ? false : { pathLength: 0, opacity: 0.2 }}
-                      animate={{ pathLength: 1, opacity: [0.3, 1, 0.7] }}
-                      transition={{
-                        duration: 0.5,
-                        delay: out.delay - 0.22,
-                        ease: EASE,
-                      }}
+                      animate={
+                        reduce
+                          ? undefined
+                          : { pathLength: 1, opacity: [0.3, 1, 0.7] }
+                      }
+                      transition={
+                        reduce
+                          ? undefined
+                          : {
+                              duration: 0.5,
+                              delay: out.delay - 0.22,
+                              ease: EASE,
+                            }
+                      }
                     />
                     {!reduce && (
                       <motion.path
@@ -264,26 +290,42 @@ export default function HeroVisual() {
                 stroke="rgba(255,255,255,0.28)"
                 strokeWidth="1.25"
                 initial={reduce ? false : { pathLength: 0 }}
-                animate={{ pathLength: 1 }}
-                transition={{ duration: 0.5, delay: 0.75, ease: EASE }}
+                animate={reduce ? undefined : { pathLength: 1 }}
+                transition={
+                  reduce
+                    ? undefined
+                    : { duration: 0.5, delay: 0.75, ease: EASE }
+                }
               />
             </svg>
 
             {/* Popped-out 3D White PortaD Shield Hub */}
             <motion.div
               initial={reduce ? false : { scale: 0.6, opacity: 0 }}
-              animate={{
-                scale: [0.6, 1.12, 1],
-                opacity: 1,
-                boxShadow: [
-                  "0 0 18px rgba(255,255,255,0.25)",
-                  "0 0 38px rgba(8,207,254,0.85)",
-                  "0 0 24px rgba(8,207,254,0.4)",
-                ],
-              }}
-              transition={{ duration: 0.75, delay: 0.35, ease: EASE }}
+              animate={
+                reduce
+                  ? undefined
+                  : {
+                      scale: [0.6, 1.12, 1],
+                      opacity: 1,
+                      boxShadow: [
+                        "0 0 18px rgba(255,255,255,0.25)",
+                        "0 0 38px rgba(8,207,254,0.85)",
+                        "0 0 24px rgba(8,207,254,0.4)",
+                      ],
+                    }
+              }
+              transition={
+                reduce
+                  ? undefined
+                  : { duration: 0.75, delay: 0.35, ease: EASE }
+              }
               whileHover={reduce ? undefined : { scale: 1.12 }}
-              style={reduce ? undefined : { transform: "translateZ(28px)" }}
+              style={
+                reduce
+                  ? { boxShadow: "0 0 24px rgba(8,207,254,0.4)" }
+                  : { transform: "translateZ(28px)" }
+              }
               className="relative z-30 grid h-12 w-12 place-items-center rounded-2xl bg-white text-[#060607]"
             >
               <svg
@@ -331,17 +373,25 @@ export default function HeroVisual() {
                         borderColor: "rgba(255,255,255,0.12)",
                       }
                 }
-                animate={{
-                  opacity: 1,
-                  x: 0,
-                  scale: [0.92, 1.04, 1],
-                  borderColor: "rgba(8,207,254,0.75)",
-                }}
-                transition={{
-                  duration: 0.55,
-                  delay: out.delay,
-                  ease: EASE,
-                }}
+                animate={
+                  reduce
+                    ? undefined
+                    : {
+                        opacity: 1,
+                        x: 0,
+                        scale: [0.92, 1.04, 1],
+                        borderColor: "rgba(8,207,254,0.75)",
+                      }
+                }
+                transition={
+                  reduce
+                    ? undefined
+                    : {
+                        duration: 0.55,
+                        delay: out.delay,
+                        ease: EASE,
+                      }
+                }
                 className="flex h-[36px] items-center justify-between gap-2 rounded-full border border-[#08CFFE]/70 bg-[#0d3548] px-3 text-xs font-medium text-[#7ee8ff] shadow-[0_0_20px_-6px_rgba(8,207,254,0.6)] transition-all hover:bg-[#104761] hover:text-white"
               >
                 <span className="truncate">{out.label}</span>
